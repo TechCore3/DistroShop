@@ -1,26 +1,43 @@
-# Development
+# DistroShop
 
-Your new bare-bones project includes minimal organization with a single `main.rs` file and a few assets.
+> **Work in progress.** Things will break, change, or disappear without notice.
 
+A minimal desktop app (built with [Dioxus](https://dioxuslabs.com/)) for browsing Linux distros and flashing them to a USB drive.
+
+## What it does
+
+- Fetches a list of distros from a [remote JSON source](https://github.com/TechCore3/DistroShop)
+- Caches the list locally (`$TMPDIR/distros.json`) so it works offline after the first sync
+- Lets you manually refresh the cached list
+- Displays each distro's name, description, and image
+
+## Planned
+
+- [ ] "Download and Flash" — write an image to a USB drive using `dd` (or maybe a native file writing function??)
+- [ ] Download progress / status feedback
+- [ ] Error handling polish
+- [ ] Distro search / filtering
+
+## Running
+
+```bash
+cargo run
 ```
-project/
-├─ assets/ # Any assets that are used by the app should be placed here
-├─ src/
-│  ├─ main.rs # main.rs is the entry point to your application and currently contains all components for the app
-├─ Cargo.toml # The Cargo.toml file defines the dependencies and feature flags for your project
-```
 
-### Serving Your App
-
-Run the following command in the root of your project to start developing with the default platform:
+Requires the [Dioxus CLI](https://dioxuslabs.com/learn/0.6/getting_started) if you want hot-reload / bundling:
 
 ```bash
 dx serve
 ```
 
-To run for a different platform, use the `--platform platform` flag. E.g.
-```bash
-dx serve --platform desktop
+## Project structure
+
+```
+src/
+├── main.rs          # app entry point
+└── list_handler.rs  # distro list fetching, caching, and UI
 ```
 
-# DistroShop
+## License
+
+GPL v3.0
