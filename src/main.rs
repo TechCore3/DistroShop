@@ -1,19 +1,19 @@
-use dioxus::html::a::download;
-use dioxus::logger::tracing::dispatcher::get_default;
 use dioxus::prelude::*;
-use serde::Deserialize;
-use serde_json;
-use std::fs;
-use std::path::PathBuf;
 
 use crate::list_handler::distro_list;
 
-mod list_handler;
+pub mod flash_handler;
+pub mod list_handler;
+static CSS: Asset = asset!("/assets/main.css");
 
 #[component]
 fn app() -> Element {
-    distro_list()
+    rsx! {
+        document::Stylesheet { href: CSS }
+        div { distro_list {} }
+    }
 }
+
 fn main() {
     dioxus::launch(app);
 }
