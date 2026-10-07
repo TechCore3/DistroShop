@@ -5,6 +5,7 @@ use dioxus::desktop::{Config, WindowBuilder};
 use dioxus::desktop::tao::window::Icon;
 use crate::list_handler::distro_list;
 
+pub mod distro_testing;
 pub mod flashing;
 pub mod list_handler;
 static CSS: &str = include_str!("../assets/main.css");

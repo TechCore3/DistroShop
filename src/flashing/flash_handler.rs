@@ -1,6 +1,7 @@
 use crate::list_handler::{self, get_config_dir};
 use dioxus::core::spawn_forever;
 use dioxus::prelude::*;
+use crate::distro_testing::vm_handler;
 
 use std::fs;
 
@@ -86,7 +87,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
         spawn_forever(async move {
 
             status.set("Downloading iso image... (will take a while)".to_string());
-            match download_distro(&distro_to_download).await {
+            match download_distro(distro_to_download).await {
              Ok(_) => {
                 status.set("Flashing to block device (ui might freeze and that's normal)".to_string()); //can't be unintended behavior if bugs are intended
                 tokio::time::sleep(Duration::from_millis(100)).await;
@@ -112,7 +113,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
     Ok(())
 }
 
-async fn download_distro(distro: &list_handler::distro) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn download_distro(distro: list_handler::distro) -> Result<(), Box<dyn std::error::Error>> {
     let distro= distro.clone();
     info!{"requesting {}", distro.downloadlink};
     let response = reqwest::get(distro.downloadlink).await?.error_for_status()?;
@@ -135,7 +136,14 @@ async fn download_distro(distro: &list_handler::distro) -> Result<(), Box<dyn st
 pub fn show_more(distro: list_handler::distro, is_showing: Signal<bool>) -> Element {
     let mut show_form = use_signal(|| false);
     let mut show_button = use_signal(|| true);
-    let  status = use_signal(|| "".to_string());
+    let status = use_signal(|| "".to_string());
+
+    let distro_for_title = distro.clone();
+    let distro_for_image = distro.clone();
+    let distro_for_description = distro.clone();
+    let distro_for_form = distro.clone();
+    let distro_for_vm = distro.clone();
+
     let back_button_handler = move |_: MouseEvent| {
         if show_form(){
             show_form.set(false);
@@ -149,20 +157,26 @@ pub fn show_more(distro: list_handler::distro, is_showing: Signal<bool>) -> Elem
         div { class: "modal-overlay",
             div { class: "modal-panel",
                 div { class: "modal-header",
-                    h2 { class: "modal-title", "{distro.name}" }
+                    h2 { class: "modal-title", "{distro_for_title.name}" }
                     button { class: "secondary-button", onclick: back_button_handler, "Back" }
                 }
                 div { class: "modal-body",
                     img {
                         class: "center distro-image",
-                        src: "{distro.image}",
+                        src: "{distro_for_image.image}",
                     }
-                    p { class: "modal-description center", "{distro.descriptionfull}" }
+                    p { class: "modal-description center", "{distro_for_description.descriptionfull}" }
                     h3 { class: "modal-status center", "{status}" }
                     if show_form()  {
-                        form_handler { distro: distro.clone(), show_form: show_form,status: status, show_button: show_button, }
+                        form_handler { distro: distro_for_form.clone(), show_form: show_form,status: status, show_button: show_button, }
                     } else if show_button() {
                         div { class: "form-actions",
+                            button { class: "primary-button center", onclick: move |_| {
+                                let distro_for_vm_run = distro_for_vm.clone();
+                                spawn_forever(async move {
+                                    vm_handler::run_vm(&distro_for_vm_run).await;
+                                });
+                            }, "Test in a VM" }
                             button { class: "primary-button center",onclick: move |_| show_form.set(true), "Download and flash" }
                         }
                     }

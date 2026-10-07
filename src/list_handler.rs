@@ -1,4 +1,3 @@
-
 use crate::flashing::flash_handler;
 use dioxus::prelude::*;
 use serde::Deserialize;
