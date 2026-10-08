@@ -9,7 +9,7 @@ const DISTROLISTGITHUB: &str =
 static CSS: &str = include_str!("../assets/main.css");
 
 #[derive(Deserialize, Clone, PartialEq)]
-#[allow(non_camel_case_types)] // cant be bothered to change case at this point in development lol
+#[allow(non_camel_case_types)]
 pub struct distro {
     pub id: u8, //might expand later who knows
     pub name: String,

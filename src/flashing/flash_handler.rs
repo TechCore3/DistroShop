@@ -138,10 +138,6 @@ pub fn show_more(distro: list_handler::distro, is_showing: Signal<bool>) -> Elem
     let mut show_button = use_signal(|| true);
     let status = use_signal(|| "".to_string());
 
-    let distro_for_title = distro.clone();
-    let distro_for_image = distro.clone();
-    let distro_for_description = distro.clone();
-    let distro_for_form = distro.clone();
     let distro_for_vm = distro.clone();
 
     let back_button_handler = move |_: MouseEvent| {
@@ -157,18 +153,18 @@ pub fn show_more(distro: list_handler::distro, is_showing: Signal<bool>) -> Elem
         div { class: "modal-overlay",
             div { class: "modal-panel",
                 div { class: "modal-header",
-                    h2 { class: "modal-title", "{distro_for_title.name}" }
+                    h2 { class: "modal-title", "{distro.name}" }
                     button { class: "secondary-button", onclick: back_button_handler, "Back" }
                 }
                 div { class: "modal-body",
                     img {
                         class: "center distro-image",
-                        src: "{distro_for_image.image}",
+                        src: "{distro.image}",
                     }
-                    p { class: "modal-description center", "{distro_for_description.descriptionfull}" }
+                    p { class: "modal-description center", "{distro.descriptionfull}" }
                     h3 { class: "modal-status center", "{status}" }
                     if show_form()  {
-                        form_handler { distro: distro_for_form.clone(), show_form: show_form,status: status, show_button: show_button, }
+                        form_handler { distro: distro.clone(), show_form: show_form,status: status, show_button: show_button, }
                     } else if show_button() {
                         div { class: "form-actions",
                             button { class: "primary-button center", onclick: move |_| {
