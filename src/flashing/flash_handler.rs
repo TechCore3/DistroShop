@@ -136,13 +136,20 @@ pub async fn download_distro(distro: list_handler::distro) -> Result<(), Box<dyn
 pub fn show_more(distro: list_handler::distro, is_showing: Signal<bool>) -> Element {
     let mut show_form = use_signal(|| false);
     let mut show_button = use_signal(|| true);
+    let mut show_form_vm = use_signal(|| false);
+
     let status = use_signal(|| "".to_string());
 
+    let distro_for_form = distro.clone();
     let distro_for_vm = distro.clone();
 
     let back_button_handler = move |_: MouseEvent| {
         if show_form(){
             show_form.set(false);
+            show_button.set(true);
+        }
+        else if show_form_vm(){
+            show_form_vm.set(false);
             show_button.set(true);
         } else {
             is_showing.set(false);
@@ -164,14 +171,14 @@ pub fn show_more(distro: list_handler::distro, is_showing: Signal<bool>) -> Elem
                     p { class: "modal-description center", "{distro.descriptionfull}" }
                     h3 { class: "modal-status center", "{status}" }
                     if show_form()  {
-                        form_handler { distro: distro.clone(), show_form: show_form,status: status, show_button: show_button, }
-                    } else if show_button() {
+                        form_handler { distro: distro_for_form.clone(), show_form: show_form, status: status, show_button: show_button }
+                    } else if show_form_vm() {
+                        vm_handler::form_handler { distro: distro_for_vm.clone(), show_form_vm: show_form_vm, status: status }
+                    } 
+                    else if show_button() {
                         div { class: "form-actions",
                             button { class: "primary-button center", onclick: move |_| {
-                                let distro_for_vm_run = distro_for_vm.clone();
-                                spawn_forever(async move {
-                                    vm_handler::run_vm(&distro_for_vm_run).await;
-                                });
+                            show_form_vm.set(true)
                             }, "Test in a VM" }
                             button { class: "primary-button center",onclick: move |_| show_form.set(true), "Download and flash" }
                         }
