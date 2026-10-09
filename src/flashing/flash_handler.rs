@@ -127,12 +127,15 @@ pub async fn download_distro(distro: list_handler::distro) -> Result<(), Box<dyn
     info!("got headers: {} len={:?}", response.status(), response.content_length());
 
     let mut file_path = PathBuf::from(get_config_dir());
-    fs::create_dir_all(&file_path)?; // already creating if list isnt found but may be an edge case; flash_handler/ln86
+    if !file_path.exists(){
+    fs::create_dir_all(&file_path)?; // already creating if list isnt found but may be an edge case; flash_handler/ln89
+    }
     file_path.push(distro.filename);
 
     let contents = response.bytes().await?;
     info!("got body: {} bytes", contents.len());
     if sha256_bytes(&contents) == distro.sha256 {
+    info!("checksum does match");
     fs::write(&file_path, contents)?;
     info!("wrote {:?}", file_path);
     } else {

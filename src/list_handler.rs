@@ -85,7 +85,9 @@ pub fn distro_list() -> Element {
                 status_signal.set("Downloading...".to_string());
                 is_loading.set(true);
                 let configdir = get_config_dir();
+                if !configdir.exists(){
                 fs::create_dir(configdir).expect("unable to create config directory! (~/.config/distroshop/)");
+                }
                 match download_and_save_list().await {
                     Ok(items) => {
                         items_signal.set(items);
