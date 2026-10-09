@@ -29,7 +29,7 @@ fn physical_drive_for(letter: String) -> Result<String, Box<dyn std::error::Erro
 }
 
 pub fn flasher(driveletter: &str, isoimg: &str, flashmode: &str) -> std::io::Result <()> { 
-    let drive = physical_drive_for(driveletter.to_string()).expect("");
+    let driveletter = physical_drive_for(driveletter.to_string()).expect("");
     if !is_elevated::is_elevated() {
         let exe = env::current_exe().expect("no current exe");
         let args = vec![drive, isoimg.to_string(), flashmode.to_string()];

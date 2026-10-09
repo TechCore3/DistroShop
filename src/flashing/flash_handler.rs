@@ -2,8 +2,9 @@ use crate::list_handler::{self, get_config_dir};
 use dioxus::core::spawn_forever;
 use dioxus::prelude::*;
 use crate::distro_testing::vm_handler;
-
 use std::fs;
+use sha2::{Digest, Sha256};
+
 
 use std::path::PathBuf;
 use std::time::Duration;
@@ -13,6 +14,12 @@ use crate::flashing::flasher_unix;
 use crate::flashing::flasher_win;
 static CSS: &str = include_str!("../../assets/main.css");
 
+fn sha256_bytes(data: &[u8]) -> String {
+    Sha256::digest(data)
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect()
+}
 #[component]
 fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut status: Signal<String>, mut show_button: Signal<bool>) -> Element {
     show_button.set(false);
@@ -125,8 +132,13 @@ pub async fn download_distro(distro: list_handler::distro) -> Result<(), Box<dyn
 
     let contents = response.bytes().await?;
     info!("got body: {} bytes", contents.len());
+    if sha256_bytes(&contents) == distro.sha256 {
     fs::write(&file_path, contents)?;
     info!("wrote {:?}", file_path);
+    } else {
+        return Err(Box::<dyn std::error::Error>::from("Checksum of the downloaded ISO does not match!".to_string()));
+    }
+    
 
     Ok(())
 }
@@ -149,6 +161,7 @@ pub fn show_more(distro: list_handler::distro, is_showing: Signal<bool>) -> Elem
             show_button.set(true);
         }
         else if show_form_vm(){
+
             show_form_vm.set(false);
             show_button.set(true);
         } else {

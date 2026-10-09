@@ -5,8 +5,9 @@
     "description": "A complex distro for intermediates",
     "descriptionfull": "Arch Linux is a lightweight, rolling-release distribution for experienced users who want full control. It ships a minimal base system, so you install only the components you need.",
     "image": "https://cdn.simpleicons.org/archlinux",
-    "downloadlink": "https://mirror.telepoint.bg/archlinux/iso/2026.09.01/archlinux-x86_64.iso",
-    "filename": "archlinux-X86_64.iso"
+    "downloadlink": "https://geo.mirror.pkgbuild.com/iso/latest/archlinux-x86_64.iso",
+    "filename": "archlinux-X86_64.iso",
+    "sha256": "684ded26c63240ff4a41e8c25ee84ea6da233f557364821f13d12c2b0a9059a5"
   },
   {
     "id": 1,
@@ -14,8 +15,9 @@
     "description": "An ultra-light distro that runs entirely from RAM",
     "descriptionfull": "Tiny Core Linux is a minimalist, modular distribution of only about 25 MB. It boots entirely into RAM, running fast even on old hardware, and you add software on demand as extensions.",
     "image": "https://linuxbasecamp.com/storage/logos/distros/tiny-core-linux.png",
-    "downloadlink": "http://tinycorelinux.net/17.x/x86/release/Core-current.iso",
-    "filename": "TinyCore-current.iso"
+    "downloadlink": "http://tinycorelinux.net/17.x/x86/release/TinyCore-current.iso",
+    "filename": "TinyCore-current.iso",
+    "sha256": "877f65d7e4fd2629ff06ebdd24dc982b50141fe3f8c8b0e7f01e089cec365357"
   },
   {
     "id": 2,
@@ -24,7 +26,8 @@
     "descriptionfull": "Linux Mint 22.3 is an Ubuntu-based distribution focused on being familiar and easy to use. Its Cinnamon desktop has a traditional layout, and multimedia codecs work out of the box.",
     "image": "https://cdn.simpleicons.org/linuxmint",
     "downloadlink": "https://mirrors.kernel.org/linuxmint/stable/22.3/linuxmint-22.3-cinnamon-64bit.iso",
-    "filename": "linuxmint-22.3-cinnamon-64bit.iso"
+    "filename": "linuxmint-22.3-cinnamon-64bit.iso",
+    "sha256": "a081ab202cfda17f6924128dbd2de8b63518ac0531bcfe3f1a1b88097c459bd4"
   },
   {
     "id": 3,
@@ -32,8 +35,9 @@
     "description": "The most popular beginner-friendly distro",
     "descriptionfull": "Ubuntu 26.04 LTS is a Debian-based distribution backed by Canonical, with a huge community and extensive documentation. This long-term support release gets five years of updates and ships with GNOME.",
     "image": "https://cdn.simpleicons.org/ubuntu",
-    "downloadlink": "https://releases.ubuntu.com/26.04/ubuntu-26.04-desktop-amd64.iso",
-    "filename": "ubuntu-26.04-desktop-amd64.iso"
+    "downloadlink": "https://releases.ubuntu.com/26.04.1/ubuntu-26.04.1-desktop-amd64.iso",
+    "filename": "ubuntu-26.04-desktop-amd64.iso",
+    "sha256": "601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f"
   },
   {
     "id": 4,
@@ -41,8 +45,9 @@
     "description": "A rock-solid, stable universal operating system",
     "descriptionfull": "Debian 13 \"Trixie\" is one of the oldest and most influential distributions, known for stability and a strong commitment to free software. This small netinst image downloads the rest of the system during installation, so it needs an internet connection.",
     "image": "https://cdn.simpleicons.org/debian",
-    "downloadlink": "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso",
-    "filename": "debian-13.6.0-amd64-netinst.iso"
+    "downloadlink": "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.7.0-amd64-netinst.iso",
+    "filename": "debian-13.7.0-amd64-netinst.iso",
+    "sha256": "a7ef94ac2fb9a7fec454552abd629b7cc9d5155c886165a45649f5ce6167e355"
   },
   {
     "id": 5,
@@ -51,7 +56,8 @@
     "descriptionfull": "Fedora Workstation 44 is a community distribution sponsored by Red Hat that ships recent software while staying stable. It uses GNOME by default and is a popular choice for developers.",
     "image": "https://cdn.simpleicons.org/fedora",
     "downloadlink": "https://download.fedoraproject.org/pub/fedora/linux/releases/44/Workstation/x86_64/iso/Fedora-Workstation-Live-44-1.7.x86_64.iso",
-    "filename": "Fedora-Workstation-Live-44-1.7.x86_64.iso"
+    "filename": "Fedora-Workstation-Live-44-1.7.x86_64.iso",
+    "sha256": "1620295f6a00c27c3208f0c00b8ece4eab1ec69b9002152d97488bf26a426ddf"
   },
   {
     "id": 6,
@@ -60,7 +66,8 @@
     "descriptionfull": "Manjaro is built on Arch Linux but adds a graphical installer, automatic hardware detection and curated update branches. This KDE Plasma edition gives you Arch's rolling releases without the manual setup.",
     "image": "https://cdn.simpleicons.org/manjaro",
     "downloadlink": "https://download.manjaro.org/kde/26.1.1/manjaro-kde-26.1.1-260825-linux71.iso",
-    "filename": "manjaro-kde-26.1.1-260825-linux71.iso"
+    "filename": "manjaro-kde-26.1.1-260825-linux71.iso",
+    "sha256": "f60be571f9c5509a0d96afea7d3e1da70fd1ac8d9a0214b0193be1641080ab95"
   },
   {
     "id": 7,
@@ -69,7 +76,8 @@
     "descriptionfull": "openSUSE Tumbleweed is a rolling-release distribution where every update passes automated testing before release. It includes YaST for system configuration and Btrfs snapshots for easy rollbacks.",
     "image": "https://cdn.simpleicons.org/opensuse",
     "downloadlink": "https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-DVD-x86_64-Current.iso",
-    "filename": "openSUSE-Tumbleweed-DVD-x86_64-Current.iso"
+    "filename": "openSUSE-Tumbleweed-DVD-x86_64-Current.iso",
+    "sha256": "c346ced1701a891df69235a58556a0a3ff3fa7ddaf3033d13327f8aef9b245b8"
   },
   {
     "id": 8,
@@ -78,7 +86,8 @@
     "descriptionfull": "Kali Linux is a Debian-based distribution packed with hundreds of tools for security research, penetration testing and digital forensics. It is meant for professionals and learners, not as a daily desktop.",
     "image": "https://cdn.simpleicons.org/kalilinux",
     "downloadlink": "https://cdimage.kali.org/kali-2026.2/kali-linux-2026.2-installer-amd64.iso",
-    "filename": "kali-linux-2026.2-installer-amd64.iso"
+    "filename": "kali-linux-2026.2-installer-amd64.iso",
+    "sha256": "6dbefacc95e3b556c19c48e8bae39b8b505e2d3a1aba0bfb7ab62b036c3d2ba3"
   },
   {
     "id": 9,
@@ -87,7 +96,8 @@
     "descriptionfull": "Alpine Linux is built around musl libc and BusyBox, giving it a very small footprint of a few hundred megabytes. It is a favorite base for Docker images, routers and lightweight servers.",
     "image": "https://cdn.simpleicons.org/alpinelinux",
     "downloadlink": "https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/alpine-standard-3.24.1-x86_64.iso",
-    "filename": "alpine-standard-3.24.1-x86_64.iso"
+    "filename": "alpine-standard-3.24.1-x86_64.iso",
+    "sha256": "f4dd613206676c62949144c8ad75fc64582099f444dd1485bae104a60f51dd26"
   },
   {
     "id": 10,
@@ -96,7 +106,8 @@
     "descriptionfull": "Gentoo compiles software from source using its Portage package manager, letting you tune every part of the system for your hardware and needs. It has a steep learning curve but offers unmatched flexibility.",
     "image": "https://cdn.simpleicons.org/gentoo",
     "downloadlink": "https://distfiles.gentoo.org/releases/amd64/autobuilds/current-install-amd64-minimal/install-amd64-minimal-20260913T163055Z.iso",
-    "filename": "install-amd64-minimal-20260913T163055Z.iso"
+    "filename": "install-amd64-minimal-20260913T163055Z.iso",
+    "sha256": "4f155acdffd6b9ea88c69a06a22fb4db1ca780d37fd11dd370510ec28a3ab546"
   },
   {
     "id": 11,
@@ -105,6 +116,7 @@
     "descriptionfull": "NixOS lets you describe your entire system in a single configuration file, making setups reproducible and easy to roll back. It is ideal for people who like treating their OS like code.",
     "image": "https://cdn.simpleicons.org/nixos",
     "downloadlink": "https://channels.nixos.org/nixos-26.05/latest-nixos-graphical-x86_64-linux.iso",
-    "filename": "nixos-26.05-graphical-x86_64-linux.iso"
+    "filename": "nixos-26.05-graphical-x86_64-linux.iso",
+    "sha256": "8c39c59fb6a83cf5451e02934ccf06c7a9f62addf409a8bb9e02efbb2d994d0c"
   }
 ]

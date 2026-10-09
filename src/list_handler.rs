@@ -11,13 +11,14 @@ static CSS: &str = include_str!("../assets/main.css");
 #[derive(Deserialize, Clone, PartialEq)]
 #[allow(non_camel_case_types)]
 pub struct distro {
-    pub id: u8, //might expand later who knows
+    pub id: u8,
     pub name: String,
     pub description: String,
     pub descriptionfull: String,
     pub image: String,
     pub downloadlink: String,
     pub filename: String,
+    pub sha256: String,
 }
 
 

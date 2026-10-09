@@ -19,6 +19,7 @@ tokio = "1.53.1"
 wmi = "0.13" #thank god i dont have to work with win32 directly
 runas = "1.2"
 is_elevated = "0.1"
+sha2 = "0.11.0"
 
 [features]
 default = ["desktop"]
