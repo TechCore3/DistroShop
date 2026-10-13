@@ -153,12 +153,13 @@ pub fn show_more(distro: list_handler::distro, is_showing: Signal<bool>) -> Elem
     let mut show_button = use_signal(|| true);
     let mut show_form_vm = use_signal(|| false);
 
-    let status = use_signal(|| "".to_string());
+    let mut status = use_signal(|| "".to_string());
 
     let distro_for_form = distro.clone();
     let distro_for_vm = distro.clone();
 
     let back_button_handler = move |_: MouseEvent| {
+        status.set("".to_string());
         if show_form(){
             show_form.set(false);
             show_button.set(true);

@@ -18,7 +18,7 @@ fn download_handler(distro_for_download: list_handler::distro) -> io::Result<()>
 }
 
 #[component]
-pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mut status: Signal<String>) -> Element { //will use status arg in the future
+pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mut status: Signal<String>) -> Element {
     let distro = distro.clone();
     let mut vm_ram_mb: Signal<u32> = use_signal(|| 2048);
     let mut vm_cpu_cores: Signal<u8> = use_signal(|| 2);
@@ -28,7 +28,9 @@ pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mu
         let cpu_cores = vm_cpu_cores;
 
         spawn_forever(async move {
-            run_vm(distro, ram_mb, cpu_cores).await;
+            if let Err(err) = run_vm(distro, ram_mb, cpu_cores, status).await {
+                status.set(format!("Failed to start VM: {err}"));
+            }
         });
     };
     rsx! {
@@ -60,10 +62,18 @@ pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mu
     }
 }
 
-pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores: Signal<u8>) {
+pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores: Signal<u8>, mut status: Signal<String>) -> Result<(), Box<dyn std::error::Error>> {
     
 
-    let qemu_path = find_qemu().expect("qemu-system not found. install it with your package manager");
+    let qemu_path = find_qemu().unwrap_or_default();
+    if qemu_path.is_empty() {
+        status.set("Unable to find qemu-system binary. Please install it!".to_string());
+        return Err(io::Error::new(
+            io::ErrorKind::Other,
+            format!("qemu-system is not present"),
+        )
+        .into());
+    } 
     let mut iso_path = get_config_dir();
     iso_path.push(&distro.filename);
     if !iso_path.exists() {
@@ -72,9 +82,16 @@ pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores
 
     }
     let iso_arg = iso_path.display().to_string().replace(',', ",,");
-
+    let acceleration = {
+        #[cfg(target_os = "linux")]
+        {"kvm"}
+        #[cfg(target_os = "macos")]
+        {"hvf"}
+        #[cfg(target_os = "windows")]
+        {"whpx"}
+    };
     let status = Command::new(qemu_path)
-    .args(["-enable-kvm", "-cpu", "host"]) // linux only for now
+    .args(["-accel",acceleration, "-cpu", "host"])
     .args(["-m", &ram_mb.to_string()])
     .args(["-smp", &cpu_cores.to_string()])
     .arg("-drive")
@@ -86,6 +103,11 @@ pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores
     .expect("can't start up qemu");
 
     if !status.success() {
-    eprintln!("qemu exited with: {status}");
+        return Err(io::Error::new(
+            io::ErrorKind::Other,
+            format!("QEMU exited with status: {status}"),
+        )
+        .into());
     }
+    Ok(())
 }

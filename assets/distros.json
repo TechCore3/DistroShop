@@ -5,8 +5,8 @@
     "description": "A complex distro for intermediates",
     "descriptionfull": "Arch Linux is a lightweight, rolling-release distribution for experienced users who want full control. It ships a minimal base system, so you install only the components you need.",
     "image": "https://cdn.simpleicons.org/archlinux",
-    "downloadlink": "https://geo.mirror.pkgbuild.com/iso/latest/archlinux-x86_64.iso",
-    "filename": "archlinux-X86_64.iso",
+    "downloadlink": "https://archive.archlinux.org/iso/2026.10.01/archlinux-2026.10.01-x86_64.iso",
+    "filename": "archlinux-2026.10.01-x86_64.iso",
     "sha256": "684ded26c63240ff4a41e8c25ee84ea6da233f557364821f13d12c2b0a9059a5"
   },
   {
@@ -15,9 +15,9 @@
     "description": "An ultra-light distro that runs entirely from RAM",
     "descriptionfull": "Tiny Core Linux is a minimalist, modular distribution of only about 25 MB. It boots entirely into RAM, running fast even on old hardware, and you add software on demand as extensions.",
     "image": "https://linuxbasecamp.com/storage/logos/distros/tiny-core-linux.png",
-    "downloadlink": "http://tinycorelinux.net/17.x/x86/release/TinyCore-current.iso",
-    "filename": "TinyCore-current.iso",
-    "sha256": "877f65d7e4fd2629ff06ebdd24dc982b50141fe3f8c8b0e7f01e089cec365357"
+    "downloadlink": "https://ftp.nl.freebsd.org/os/Linux/distr/tinycorelinux/17.x/x86/release/TinyCore-17.0.iso",
+    "filename": "TinyCore-17.0.iso",
+    "sha256": "0539cbcadc241e529c368ffefb2dd63676ea09f2b7a49706f61b81f83889223d"
   },
   {
     "id": 2,
@@ -36,7 +36,7 @@
     "descriptionfull": "Ubuntu 26.04 LTS is a Debian-based distribution backed by Canonical, with a huge community and extensive documentation. This long-term support release gets five years of updates and ships with GNOME.",
     "image": "https://cdn.simpleicons.org/ubuntu",
     "downloadlink": "https://releases.ubuntu.com/26.04.1/ubuntu-26.04.1-desktop-amd64.iso",
-    "filename": "ubuntu-26.04-desktop-amd64.iso",
+    "filename": "ubuntu-26.04.1-desktop-amd64.iso",
     "sha256": "601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f"
   },
   {
@@ -71,13 +71,13 @@
   },
   {
     "id": 7,
-    "name": "opensuse tumbleweed",
-    "description": "A tested rolling release with powerful tools",
-    "descriptionfull": "openSUSE Tumbleweed is a rolling-release distribution where every update passes automated testing before release. It includes YaST for system configuration and Btrfs snapshots for easy rollbacks.",
+    "name": "opensuse leap",
+    "description": "A stable, enterprise-grade release with long support",
+    "descriptionfull": "openSUSE Leap 16.0 is a fixed-release distribution built on the same sources as SUSE Linux Enterprise, with 24 months of updates per release. It uses the Agama installer and is a dependable choice for desktops and servers. This is the offline installer, so it needs no internet connection during installation.",
     "image": "https://cdn.simpleicons.org/opensuse",
-    "downloadlink": "https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-DVD-x86_64-Current.iso",
-    "filename": "openSUSE-Tumbleweed-DVD-x86_64-Current.iso",
-    "sha256": "c346ced1701a891df69235a58556a0a3ff3fa7ddaf3033d13327f8aef9b245b8"
+    "downloadlink": "https://download.opensuse.org/distribution/leap/16.0/offline/Leap-16.0-offline-installer-x86_64.install.iso",
+    "filename": "Leap-16.0-offline-installer-x86_64.install.iso",
+    "sha256": null
   },
   {
     "id": 8,
@@ -105,7 +105,7 @@
     "description": "A source-based distro for maximum customization",
     "descriptionfull": "Gentoo compiles software from source using its Portage package manager, letting you tune every part of the system for your hardware and needs. It has a steep learning curve but offers unmatched flexibility.",
     "image": "https://cdn.simpleicons.org/gentoo",
-    "downloadlink": "https://distfiles.gentoo.org/releases/amd64/autobuilds/current-install-amd64-minimal/install-amd64-minimal-20260913T163055Z.iso",
+    "downloadlink": "https://distfiles.gentoo.org/releases/amd64/autobuilds/20260913T163055Z/install-amd64-minimal-20260913T163055Z.iso",
     "filename": "install-amd64-minimal-20260913T163055Z.iso",
     "sha256": "4f155acdffd6b9ea88c69a06a22fb4db1ca780d37fd11dd370510ec28a3ab546"
   },
@@ -115,8 +115,8 @@
     "description": "A declarative distro configured with code",
     "descriptionfull": "NixOS lets you describe your entire system in a single configuration file, making setups reproducible and easy to roll back. It is ideal for people who like treating their OS like code.",
     "image": "https://cdn.simpleicons.org/nixos",
-    "downloadlink": "https://channels.nixos.org/nixos-26.05/latest-nixos-graphical-x86_64-linux.iso",
-    "filename": "nixos-26.05-graphical-x86_64-linux.iso",
-    "sha256": "8c39c59fb6a83cf5451e02934ccf06c7a9f62addf409a8bb9e02efbb2d994d0c"
+    "downloadlink": "https://releases.nixos.org/nixos/26.05/nixos-26.05.1183.6b316287bae2/nixos-graphical-26.05.1183.6b316287bae2-x86_64-linux.iso",
+    "filename": "nixos-graphical-26.05.1183.6b316287bae2-x86_64-linux.iso",
+    "sha256": "28e527f54815b2f8f93424ae43f78402fcb21aae42577e88c4acdfb1c2a2f984"
   }
 ]
