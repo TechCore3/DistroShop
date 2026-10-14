@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  BIN_NAME: myapp
+  BIN_NAME: distro-shop
 
 jobs:
   build:
