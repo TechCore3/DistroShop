@@ -5,17 +5,20 @@ use std::env;
 use std::process::Command;
 use std::fs::File;
 use dioxus::prelude::*;
+#[cfg(target_os = "macos")]
+use std::path::PathBuf;
 
 #[cfg(target_os = "macos")]
-fn run_mac_command(exe_path: &str, args: &str) -> std::io::Result<std::process::ExitStatus> {
-    let inner_cmd = format!("{} {}", exe_path, args).replace('\'', "'\\''");
-    
+fn run_mac_command(exe_path: &PathBuf, args: &[&str]) -> std::io::Result<std::process::ExitStatus> {
+    let joined_args = args.join(" ");
+    let inner_cmd = format!("{} {}", exe_path.display(), joined_args).replace('\'', "'\\''");
+
     let script = format!("do shell script \"{}\" with administrator privileges", inner_cmd);
 
-    Command::new("osascript")
+    Ok(Command::new("osascript")
         .arg("-e")
         .arg(script)
-        .status()?
+        .status()?)
 }
 
 pub fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> {
@@ -55,7 +58,7 @@ pub fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> 
         .status()?;
         
     #[cfg(target_os = "macos")]
-    let status = run_mac_command(&exe_path, &args);
+    let status = run_mac_command(&exe_path, &args).unwrap_or_default();
 
     if !status.success() {
         return Err(io::Error::new(
