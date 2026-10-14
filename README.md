@@ -1,8 +1,7 @@
 # DistroShop
 
-A small Linux desktop app for browsing distro images and flashing them to a USB stick.
+A small desktop app for browsing distro images, testing them in a VM, and flashing them to a USB stick.
 
-This project is still early-stage, but the basic flow is there: it loads a distro catalog, lets you view details, downloads an ISO, and writes it to a target device.
 
 ## What it does
 
@@ -11,19 +10,22 @@ This project is still early-stage, but the basic flow is there: it loads a distr
 - Lets you refresh the catalog manually
 - Displays each distro's image, summary, and full description
 - Downloads the selected ISO
+- Boots up a Virtual Machine running the ISO
 - Flashes the ISO to a chosen block device
 - Offers a `safe` and `fast` flash mode (streaming the file little by little or loading the entire iso into memory and then writing to disk)
 
 ## Current status
 
 Supported on MacOS, Windows, and Linux.
-MacOS users have to compile from source because i can't do it myself on Linux
+Windows is only supported on x86_64. All others are supported on both x86_64 and arm64.
+
 
 ## Requirements
 
-- Rust and Cargo
+- Rust and Cargo (if compiling from source)
+- qemu-system
 - A target USB device 
-- A graphical desktop environment (if on linux)
+- A graphical desktop environment
 
 ## Running the app
 
@@ -56,16 +58,20 @@ The app writes directly to the selected block device. Make sure you are targetin
 
 ```text
 src/
-├── main.rs          # app entry point and launch logic
-├── list_handler.rs  # distro catalog loading, caching, and UI
-└── flashing/        # download + flashing logic
+├── main.rs            # app entry point and launch logic
+├── list_handler.rs    # distro catalog loading, caching, and UI
+├── distro_testing/    # VM-based testing of distro images
+│   ├── mod.rs
+│   └── vm_handler.rs  # VM setup and test runs
+└── flashing/          # download + flashing logic
     ├── mod.rs
     ├── flash_handler.rs
     ├── flasher_unix.rs
     └── flasher_win.rs
 assets/
-├── distros.json     # distro catalog used by the app
-└── main.css        # styling
+├── distros.json       # distro catalog used by the app
+|── logo.png           # app favicon (works on everything except wayland)
+└── main.css           # styling
 ```
 
 ## License
