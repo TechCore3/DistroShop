@@ -1,9 +1,15 @@
 [application]
-
+name = "DistroShop"
+default_platform = "desktop"
 [web.app]
 
 # HTML title tag content
 title = "distro-shop"
+
+[bundle]
+identifier = "com.techcore3.distroshop"
+publisher = "TechCore3"
+icon = ["assets/logo.png"]
 
 # include `assets` in web platform
 [web.resource]
