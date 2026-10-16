@@ -25,19 +25,21 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
     show_button.set(false);
     let mut blockdev = use_signal(String::new);
     let mut selected = use_signal(|| "safe".to_string());
-
+    let devices = fs::read_dir("/sys/block/")
+        .into_iter()
+        .flatten()
+        .filter_map(Result::ok)
+        .map(|entry| entry.file_name().to_string_lossy().into_owned())
+        .collect::<Vec<_>>();
+    #[cfg(any(target_os = "windows", target_os = "macos"))]
     let device_label = {
         #[cfg(target_os = "macos")]
-        {
-            "Target Block Device (e.g. /dev/diskb)"
-        }
-        #[cfg(target_os = "linux")]
-        {
-            "Target Block Device (e.g. /dev/sdb)"
+       {
+           "Target Block Device (e.g. /dev/diskb)"
         }
         #[cfg(target_os = "windows")]
-        {
-            "Target Drive (e.g. D )"
+       {
+           "Target Drive (e.g. D )"
         }
     };
 
@@ -50,16 +52,42 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
         }
     };
     rsx! {
-
-        form { class: "modal-form", onsubmit: on_submit,
+        div{ class: "modal-form" ,
+        form { class: "", onsubmit: on_submit,
             div { class: "form-field",
-                label { class: "form-label", "{device_label}" }
-                input {
+            {
+                #[cfg(target_os = "linux")]
+                {
+                    rsx! {
+                        label { class: "form-label", "Target device" }
+                        select {
+                            class: "form-select",
+                            value: "{blockdev}",
+                            onchange: move |evt| blockdev.set(evt.value()),
+                            for entry in devices {
+                                option { value: "/dev/{entry}", "{entry}" }
+                            }
+                        }
+                    }
+                }
+                }
+            }
+            {
+                #[cfg(any(target_os = "windows", target_os = "macos"))]
+                {
+                    rsx! {
+                        label { class: "form-label", "{device_label}" }
+                    input {
                     class: "form-input",
                     value: "{blockdev}",
                     oninput: move |evt| blockdev.set(evt.value()),
                 }
+                    }
+                }
+                }
             }
+
+
             div { class: "form-field",
                 label { class: "form-label", "Flash mode" }
                 select {
@@ -70,12 +98,14 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
                     option {value: "safe", "Safe"}
                 }
             }
+        
             div { class: "form-actions",
-                button { class: "primary-button", r#type: "submit", "Confirm" }
+                button { class: "primary-button center", r#type: "submit", "Confirm" }
             }
         }
+        }
     }
-}
+
 
  fn download_and_flash_handler(
     distro: &list_handler::distro,

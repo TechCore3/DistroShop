@@ -1,0 +1,44 @@
+app-id: io.github.TechCore3.Distroshop
+runtime: org.gnome.Platform
+runtime-version: '47'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: distro-shop
+
+build-options:
+  append-path: /usr/lib/sdk/rust-stable/bin
+  env:
+    CARGO_HOME: /run/build/distro-shop/cargo
+    LIBRARY_PATH: /app/lib
+  build-args:
+    - --share=network
+
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=home
+  - --socket=fallback-x11
+  - --device=input
+
+modules:
+  - name: xdotool
+    buildsystem: simple
+    build-commands:
+      - make
+      - make install PREFIX=/app
+    sources:
+      - type: git
+        url: https://github.com/jordansissel/xdotool.git
+        tag: v3.20211022.1
+
+  - name: distro-shop
+    buildsystem: simple
+    build-commands:
+      - cargo build --release
+      - install -Dm755 target/release/distro-shop /app/bin/distro-shop
+    sources:
+      - type: dir
+        path: .

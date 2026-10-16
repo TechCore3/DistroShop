@@ -66,7 +66,7 @@ pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores
     
 
     let qemu_path = find_qemu().unwrap_or_default();
-    if qemu_path.is_empty() {
+    if qemu_path.as_os_str().is_empty() {
         status.set("Unable to find qemu-system binary. Please install it!".to_string());
         return Err(io::Error::new(
             io::ErrorKind::Other,
