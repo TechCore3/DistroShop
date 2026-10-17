@@ -44,6 +44,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
     };
 
     let on_submit = move |_evt: Event<FormData>| {
+        println!("{blockdev}");
         if !blockdev.read().is_empty() {
             show_form.set(false);
             download_and_flash_handler(&distro, &blockdev.read().clone(), selected(), status).unwrap();
@@ -52,8 +53,8 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
         }
     };
     rsx! {
-        div{ class: "modal-form" ,
-        form { class: "", onsubmit: on_submit,
+        
+        form { class: "modal-form", onsubmit: on_submit,
             div { class: "form-field",
             {
                 #[cfg(target_os = "linux")]
@@ -85,7 +86,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
                     }
                 }
                 }
-            }
+            
 
 
             div { class: "form-field",
@@ -100,9 +101,10 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
             }
         
             div { class: "form-actions",
-                button { class: "primary-button center", r#type: "submit", "Confirm" }
+                button { r#type: "submit", class: "primary-button center", "Confirm" }
             }
         }
+        
         }
     }
 
@@ -128,7 +130,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
              Ok(_) => {
                 status.set("Flashing to block device (ui might freeze and that's normal)".to_string()); //can't be unintended behavior if bugs are intended
                 tokio::time::sleep(Duration::from_millis(100)).await;
-                #[cfg(any(target_os = "linux", target_os = "macos"))] 
+                #[cfg(unix)] 
                 match flasher_unix::flasher(&blockdev_for_flash, &iso_filename, &flashmode_for_flash) {
                     Ok(()) => {
                         status.set("Successfully flashed iso image!".to_string());

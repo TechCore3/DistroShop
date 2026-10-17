@@ -26,8 +26,11 @@ pub fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> 
     let args = vec![blockdev, isoimg, flashmode]; //the original arguments get shadowed later 
 
     if Uid::current().is_root(){
+        info!("looking for blockdev and iso");
     let mut blockdev = File::options().write(true).open(&blockdev)?;
+        info!("found");
     let mut isoimg = File::open(&isoimg)?;
+        info!("found");
     match flashmode {
         "safe" => {
             info!("using safe mode");
@@ -47,9 +50,11 @@ pub fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> 
         }
     }
  } else {
+    info!("looking for current exe");
     let exe_path = env::current_exe()?;
+    info!("found");
 
-    
+    // it breaks here
     #[cfg(target_os = "linux")]
     let status = Command::new("pkexec") 
         .arg(&exe_path)
