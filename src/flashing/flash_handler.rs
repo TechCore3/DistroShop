@@ -1,4 +1,5 @@
 use crate::list_handler::{self, get_config_dir};
+use std::path::Path;
 use dioxus::core::spawn_forever;
 use dioxus::prelude::*;
 use crate::distro_testing::vm_handler;
@@ -88,7 +89,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
                 }
             
 
-
+                {if !Path::new("/.flatpak-info").exists(){ rsx!{
             div { class: "form-field",
                 label { class: "form-label", "Flash mode" }
                 select {
@@ -99,6 +100,9 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
                     option {value: "safe", "Safe"}
                 }
             }
+        }}
+        else {rsx!{}}
+                }
         
             div { class: "form-actions",
                 button { r#type: "submit", class: "primary-button center", "Confirm" }
@@ -128,7 +132,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
             status.set("Downloading iso image... (will take a while)".to_string());
             match download_distro(distro_to_download).await {
              Ok(_) => {
-                status.set("Flashing to block device (ui might freeze and that's normal)".to_string()); //can't be unintended behavior if bugs are intended
+                status.set("Flashing to block device (ui should freeze)".to_string()); //can't be unintended behavior if bugs are intended
                 tokio::time::sleep(Duration::from_millis(100)).await;
                 #[cfg(unix)] 
                 match flasher_unix::flasher(&blockdev_for_flash, &iso_filename, &flashmode_for_flash) {

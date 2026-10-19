@@ -7,6 +7,8 @@ use std::fs::File;
 use dioxus::prelude::*;
 #[cfg(target_os = "macos")]
 use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+use crate::flashing::udisks2_wrapper;
 
 #[cfg(target_os = "macos")]
 fn run_mac_command(exe_path: &PathBuf, args: &[&str]) -> std::io::Result<std::process::ExitStatus> {
@@ -50,11 +52,23 @@ pub fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> 
         }
     }
  } else {
+    if Path::new("/.flatpak-info").exists() {
+    let (iso, dev) = (PathBuf::from(isoimg), PathBuf::from(blockdev));
+    return std::thread::spawn(move || -> io::Result<()> {
+        tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()?
+            .block_on(udisks2_wrapper::flasher(iso, dev))
+            .map_err(io::Error::other)
+    })
+    .join()
+    .map_err(|_| io::Error::other("flash thread panicked"))?;
+}
     info!("looking for current exe");
     let exe_path = env::current_exe()?;
     info!("found");
 
-    // it breaks here
+
     #[cfg(target_os = "linux")]
     let status = Command::new("pkexec") 
         .arg(&exe_path)

@@ -20,6 +20,7 @@ wmi = "0.13" #thank god i dont have to work with win32 directly
 runas = "1.2"
 is_elevated = "0.1"
 sha2 = "0.11.0"
+zbus = { version = "6.0.0", features = ["tokio"] }
 
 [features]
 default = ["desktop"]
