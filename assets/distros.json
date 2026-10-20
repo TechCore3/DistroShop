@@ -77,7 +77,7 @@
     "image": "https://cdn.simpleicons.org/opensuse",
     "downloadlink": "https://download.opensuse.org/distribution/leap/16.0/offline/Leap-16.0-offline-installer-x86_64.install.iso",
     "filename": "Leap-16.0-offline-installer-x86_64.install.iso",
-    "sha256": null
+    "sha256": "placeholder"
   },
   {
     "id": 8,

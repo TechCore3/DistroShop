@@ -30,6 +30,11 @@ pub fn get_config_dir() -> PathBuf {
     home_dir.push(".config/distroshop/"); // %LOCALAPPDATA% be damned
     home_dir
 }
+pub fn get_cache_dir() -> PathBuf {
+    let mut home_dir = dirs::home_dir().expect("unable to find home dir!");
+    home_dir.push(".cache/distroshop/"); 
+    home_dir
+}
 
 fn get_local_distro_list() -> PathBuf {
     let mut path = get_config_dir();
@@ -87,6 +92,10 @@ pub fn distro_list() -> Element {
                 let configdir = get_config_dir();
                 if !configdir.exists(){
                 fs::create_dir(configdir).expect("unable to create config directory! (~/.config/distroshop/)");
+                let cachedir = get_cache_dir();
+                if !cachedir.exists(){
+                fs::create_dir(cachedir).expect("unable to create config directory! (~/.cache/distroshop/)");
+                }
                 }
                 match download_and_save_list().await {
                     Ok(items) => {
