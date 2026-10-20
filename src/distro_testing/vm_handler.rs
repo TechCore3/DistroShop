@@ -3,6 +3,7 @@ use std::{io, process::Command};
 use dioxus::prelude::*;
 use dioxus::core::spawn_forever;
 use crate::flashing::flash_handler;
+use std::path::PathBuf;
 
 fn find_qemu() -> Option<std::path::PathBuf> {
     let path = std::env::var_os("PATH")?;
@@ -28,7 +29,7 @@ pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mu
         let cpu_cores = vm_cpu_cores;
 
         spawn_forever(async move {
-            if let Err(err) = run_vm(distro, ram_mb, cpu_cores, status).await {
+            if let Err(err) = run_vm(distro, ram_mb, cpu_cores).await {
                 status.set(format!("Failed to start VM: {err}"));
             }
         });
@@ -56,23 +57,26 @@ pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mu
         }
         div { class: "form-actions",
                 button { class: "primary-button", r#type: "submit", "Confirm" }
-            }// maintaining a project is easy because you can steal your own code (see flash_handler)
+            }
 
         }
     }
 }
 
-pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores: Signal<u8>, mut status: Signal<String>) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores: Signal<u8>) -> Result<(), Box<dyn std::error::Error>> {
     
 
-    let qemu_path = find_qemu().unwrap_or_default();
+    let mut qemu_path = find_qemu().unwrap_or_default();
     if qemu_path.as_os_str().is_empty() {
-        status.set("Unable to find qemu-system binary. Please install it!".to_string());
+        if PathBuf::from("/.flatpak-info").exists() {
+            qemu_path = PathBuf::from("qemu-system-x86_64");
+        } else {
         return Err(io::Error::new(
             io::ErrorKind::Other,
             format!("qemu-system is not present"),
         )
-        .into());
+        .into()); 
+    }
     } 
     let mut iso_path = get_config_dir();
     iso_path.push(&distro.filename);
