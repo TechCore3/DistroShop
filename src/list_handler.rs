@@ -26,16 +26,10 @@ pub struct distro {
 // // // // // // // // // // // // // // // //
 
 
-//now obsolete but may be useful later
-pub fn get_config_dir() -> PathBuf {
-    let mut home_dir = dirs::home_dir().expect("unable to find home dir!");
-    home_dir.push(".config/distroshop/"); // %LOCALAPPDATA% be damned
-    home_dir
-}
 pub fn get_cache_dir() -> PathBuf {
-    let mut home_dir = dirs::home_dir().expect("unable to find home dir!");
-    home_dir.push(".cache/distroshop/"); 
-    home_dir
+    let mut cache_dir = dirs::cache_dir().expect("unable to find cache directory!");
+    cache_dir.push("distroshop"); 
+    cache_dir
 }
 
 

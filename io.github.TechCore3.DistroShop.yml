@@ -21,9 +21,8 @@ finish-args:
   - --socket=fallback-x11
   - --device=dri
   - --device=input
-  - --device=kvm
-  - --filesystem=home
-  - --system-talk-name=org.freedesktop.UDisks2
+  - --device=kvm # for qemu
+  - --system-talk-name=org.freedesktop.UDisks2 # for flashing isos
   - --socket=pulseaudio   
 
 modules:
@@ -55,16 +54,19 @@ modules:
         url: https://download.qemu.org/qemu-11.1.2.tar.xz
         sha256: 731b5681e4bb18be313231579b8efd0296c5b015fa36dc533874b639ba838016
 
-  - name: xdotool
+  - name: xdotool # required by dioxus
     buildsystem: simple
     build-commands:
       - make
       - make install PREFIX=/app
+    cleanup:
+      - /bin
+      - /include
+      - /share/man
     sources:
       - type: git
         url: https://github.com/jordansissel/xdotool.git
         tag: v3.20211022.1
-
   - name: distro-shop
     buildsystem: simple
     build-commands:

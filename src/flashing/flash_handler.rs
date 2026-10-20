@@ -1,4 +1,4 @@
-use crate::list_handler::{self, get_config_dir};
+use crate::list_handler::{self, get_cache_dir};
 use std::path::Path;
 use dioxus::core::spawn_forever;
 use dioxus::prelude::*;
@@ -122,7 +122,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
 {
     let distro_to_download = distro.clone();
     let blockdev_for_flash = blockdev.to_string();
-    let mut iso_filename = get_config_dir().to_string_lossy().into_owned();
+    let mut iso_filename = get_cache_dir().to_string_lossy().into_owned();
     iso_filename.push_str(&distro.filename);
     let flashmode_for_flash = flashmode.clone();
 
@@ -162,7 +162,7 @@ pub async fn download_distro(distro: list_handler::distro) -> Result<(), Box<dyn
     let response = reqwest::get(distro.downloadlink).await?.error_for_status()?;
     info!("got headers: {} len={:?}", response.status(), response.content_length());
 
-    let mut file_path = PathBuf::from(get_config_dir());
+    let mut file_path = PathBuf::from(get_cache_dir());
     if !file_path.exists(){
     fs::create_dir_all(&file_path)?; // already creating if list isnt found but may be an edge case; flash_handler/ln89
     }

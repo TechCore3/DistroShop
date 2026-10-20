@@ -1,4 +1,4 @@
-use crate::list_handler::{self, get_config_dir};
+use crate::list_handler::{self, get_cache_dir};
 use std::{io, process::Command};
 use dioxus::prelude::*;
 use dioxus::core::spawn_forever;
@@ -78,7 +78,7 @@ pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores
         .into()); 
     }
     } 
-    let mut iso_path = get_config_dir();
+    let mut iso_path = get_cache_dir();
     iso_path.push(&distro.filename);
     if !iso_path.exists() {
         let distro_for_download = distro.clone();
