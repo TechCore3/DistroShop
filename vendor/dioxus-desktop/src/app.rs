@@ -624,14 +624,7 @@ impl App {
                         std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
                     }
                 }
-                unsafe {
-                    /*
-                    Do you, the person reading this, have ANY idea how much time of my life this SINGLE line of code robbed me of?
-                    We really have to thank flatpaks for being so easy to set up, right?
-                    I do believe that the inventor of the flatpak sought not to make software portable, but to torment developers with a pure soul.
-                     */
-                    //std::env::set_var("GDK_BACKEND", "x11");
-                }
+
             });
         }
     }

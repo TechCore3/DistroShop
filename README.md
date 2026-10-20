@@ -6,8 +6,6 @@ A small desktop app for browsing distro images, testing them in a VM, and flashi
 ## What it does
 
 - Shows a list of Linux distros from a remote JSON catalog
-- Caches the list locally in `~/.config/distroshop/distros.json`
-- Lets you refresh the catalog manually
 - Displays each distro's image, summary, and full description
 - Downloads the selected ISO
 - Boots up a Virtual Machine running the ISO
@@ -23,13 +21,13 @@ Windows is only supported on x86_64. All others are supported on both x86_64 and
 ## Requirements
 
 - Rust and Cargo (if compiling from source)
-- qemu-system
+- qemu-system (automatically included on flatpak)
 - A target USB device 
 - A graphical desktop environment
 
 ## Running the app
 
-I recommend using the prebuilt binary, but you can also run it  with cargo:
+I recommend using the prebuilt binary or the flatpak, but you can also run it  with cargo:
 
 ```bash
 cargo run
@@ -44,13 +42,6 @@ dx serve
 ## Flashing safely
 
 Before flashing, double-check the target device path.
-
-Useful commands:
-
-```bash
-lsblk
-sudo fdisk -l
-```
 
 The app writes directly to the selected block device. Make sure you are targeting the USB stick, not your system drive.
 
@@ -67,10 +58,11 @@ src/
     ├── mod.rs
     ├── flash_handler.rs
     ├── flasher_unix.rs
-    └── flasher_win.rs
+    ├── flasher_win.rs
+    └── udisks2_wrapper.rs  # UDisks2 integration for Linux disk access
 assets/
 ├── distros.json       # distro catalog used by the app
-|── logo.png           # app favicon (works on everything except wayland)
+├── logo.png           # app favicon (works on everything except wayland)
 └── main.css           # styling
 ```
 

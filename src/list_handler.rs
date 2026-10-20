@@ -25,6 +25,8 @@ pub struct distro {
 
 // // // // // // // // // // // // // // // //
 
+
+//now obsolete but may be useful later
 pub fn get_config_dir() -> PathBuf {
     let mut home_dir = dirs::home_dir().expect("unable to find home dir!");
     home_dir.push(".config/distroshop/"); // %LOCALAPPDATA% be damned
@@ -36,28 +38,14 @@ pub fn get_cache_dir() -> PathBuf {
     home_dir
 }
 
-fn get_local_distro_list() -> PathBuf {
-    let mut path = get_config_dir();
-    path.push("distros.json");
-    path
-}
 
-fn read_from_disk() -> Result<Vec<distro>, Box<dyn std::error::Error>> {
-    let file_path = get_local_distro_list();
-    info!("reading from cached JSON file");
-    let file_content = fs::read_to_string(file_path)?;
-    let items: Vec<distro> = serde_json::from_str(&file_content)?;
 
-    Ok(items)
-}
 
-async fn download_and_save_list() -> Result<Vec<distro>, Box<dyn std::error::Error>> {
+
+async fn load_list() -> Result<Vec<distro>, Box<dyn std::error::Error>> {
     let response = reqwest::get(DISTROLISTGITHUB).await?;
     let json_text = response.text().await?;
     let distros: Vec<distro> = serde_json::from_str(&json_text)?;
-
-    let file_path = get_local_distro_list();
-    fs::write(&file_path, json_text)?;
 
     Ok(distros)
 }
@@ -71,33 +59,15 @@ pub fn distro_list() -> Element {
 
     use_effect(move || {
         spawn(async move {
-            let file_path = get_local_distro_list();
-
-            if file_path.exists() {
-                info!("list found locally. loading from disk.");
-                match read_from_disk() {
-                    Ok(items) => {
-                        items_signal.set(items);
-                        status_signal.set("".to_string());
-                    }
-                    Err(e) => {
-                        error!("failed to read cached list: {e}");
-                        status_signal.set(format!("Cache read failed: {e}"));
-                    }
-                }
-            } else {
                 info!("list not found locally. downloading.");
                 status_signal.set("Downloading...".to_string());
                 is_loading.set(true);
-                let configdir = get_config_dir();
-                if !configdir.exists(){
-                fs::create_dir(configdir).expect("unable to create config directory! (~/.config/distroshop/)");
                 let cachedir = get_cache_dir();
                 if !cachedir.exists(){
                 fs::create_dir(cachedir).expect("unable to create config directory! (~/.cache/distroshop/)");
                 }
-                }
-                match download_and_save_list().await {
+                
+                match load_list().await {
                     Ok(items) => {
                         items_signal.set(items);
                         status_signal.set("".to_string());
@@ -108,7 +78,7 @@ pub fn distro_list() -> Element {
                     }
                 }
                 is_loading.set(false);
-            }
+            
         });
     });
     let handle_manual_sync = move |_| {
@@ -117,7 +87,7 @@ pub fn distro_list() -> Element {
             is_loading.set(true);
             status_signal.set("Downloading data from GitHub...".to_string());
 
-            match download_and_save_list().await {
+            match load_list().await {
                 Ok(items) => {
                     items_signal.set(items);
                     info!("successfully updated local list");
