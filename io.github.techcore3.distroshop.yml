@@ -1,18 +1,17 @@
-app-id: io.github.TechCore3.Distroshop
+app-id: io.github.techcore3.distroshop
 runtime: org.gnome.Platform
-runtime-version: '47'
+runtime-version: '50'
 sdk: org.gnome.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.rust-stable//26.08
 command: distro-shop
 
 build-options:
   append-path: /usr/lib/sdk/rust-stable/bin
   env:
     CARGO_HOME: /run/build/distro-shop/cargo
+    CARGO_NET_OFFLINE: 'true'
     LIBRARY_PATH: /app/lib
-  build-args:
-    - --share=network
 
 finish-args:
   - --share=ipc
@@ -32,6 +31,7 @@ modules:
       - type: git
         url: https://gitlab.freedesktop.org/slirp/libslirp.git
         tag: v4.9.5
+        commit: 390848f47391f412451b2d259d8527fabb51e5e3
 
   - name: qemu
     buildsystem: simple
@@ -67,11 +67,18 @@ modules:
       - type: git
         url: https://github.com/jordansissel/xdotool.git
         tag: v3.20211022.1
+        commit: eb489de1b4fb3fd0cd935d68ae16ecd4c653ac7d
   - name: distro-shop
     buildsystem: simple
     build-commands:
-      - cargo build --release
+      - cargo --offline fetch --manifest-path Cargo.toml --verbose
+      - cargo build --offline --release
       - install -Dm755 target/release/distro-shop /app/bin/distro-shop
+      - install -Dm644 io.github.techcore3.distroshop.desktop /app/share/applications/io.github.techcore3.distroshop.desktop
+      - install -Dm644 io.github.techcore3.distroshop.metainfo.xml /app/share/metainfo/io.github.techcore3.distroshop.metainfo.xml
+      - install -Dm644 assets/logo.png /app/share/icons/hicolor/256x256/apps/io.github.techcore3.distroshop.png
+      - install -Dm644 LICENSE /app/share/licenses/io.github.techcore3.distroshop/LICENSE
     sources:
       - type: dir
         path: .
+      - cargo-sources.json

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.techcore3.distroshop</id>
+  <name>DistroShop</name>
+  <summary>Browse, test, and flash Linux distribution images</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <developer id="io.github.techcore3">
+    <name>TechCore3</name>
+  </developer>
+  <description>
+    <p>Browse Linux distributions, try their installation images in a virtual machine, and write images to removable USB drives.</p>
+    <ul>
+      <li>Browse and refresh a catalog of Linux distributions.</li>
+      <li>Download distribution images and test them in a virtual machine.</li>
+      <li>Write images to a removable device using safe or fast mode.</li>
+    </ul>
+    <p>Flashing overwrites the selected device. Double-check the target device before writing an image.</p>
+  </description>
+  <categories>
+    <category>System</category>
+  </categories>
+  <content_rating type="oars-1.1"/>
+  <launchable type="desktop-id">io.github.techcore3.distroshop.desktop</launchable>
+  <icon type="stock">io.github.techcore3.distroshop</icon>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Browse the distribution catalog</caption>
+      <image type="source" width="1041" height="730">https://raw.githubusercontent.com/TechCore3/DistroShop/refs/heads/main/assets/screenshotmain.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Choose to test a distribution in a virtual machine or download and flash it</caption>
+      <image type="source" width="1024" height="721">https://raw.githubusercontent.com/TechCore3/DistroShop/refs/heads/main/assets/screenshotsub.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Configure memory and CPU cores for a virtual machine</caption>
+      <image type="source" width="1032" height="728">https://raw.githubusercontent.com/TechCore3/DistroShop/refs/heads/main/assets/screenshotvm.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Select a target device for flashing</caption>
+      <image type="source" width="1040" height="719">https://raw.githubusercontent.com/TechCore3/DistroShop/refs/heads/main/assets/screenshotflash.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://github.com/TechCore3/DistroShop</url>
+  <url type="bugtracker">https://github.com/TechCore3/DistroShop/issues</url>
+  <url type="vcs-browser">https://github.com/TechCore3/DistroShop</url>
+</component>

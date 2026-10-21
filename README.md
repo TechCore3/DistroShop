@@ -39,6 +39,16 @@ If you want the Dioxus dev workflow instead of the plain desktop app:
 dx serve
 ```
 
+## Building the Flatpak
+
+The Flatpak manifest is `io.github.techcore3.distroshop.yml`. Its Cargo dependencies are pinned in `cargo-sources.json`; regenerate that file whenever `Cargo.lock` changes using `flatpak-cargo-generator.py Cargo.lock -o cargo-sources.json`.
+
+With Flatpak Builder and the GNOME 50 runtime and Rust extension installed, build with:
+
+```bash
+flatpak-builder --force-clean build-dir io.github.techcore3.distroshop.yml
+```
+
 ## Flashing safely
 
 Before flashing, double-check the target device path.
@@ -63,9 +73,10 @@ src/
 assets/
 ├── distros.json       # distro catalog used by the app
 ├── logo.png           # app favicon (works on everything except wayland)
+├── screenshot*.png    # AppStream screenshots
 └── main.css           # styling
 ```
 
 ## License
 
-GPL-3.0
+GPL-3.0-only; see [LICENSE](LICENSE).

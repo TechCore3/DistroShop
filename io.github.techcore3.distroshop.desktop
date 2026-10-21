@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=DistroShop
+Comment=Browse, test, and flash Linux distribution images
+Exec=distro-shop
+TryExec=distro-shop
+Icon=io.github.techcore3.distroshop
+Terminal=false
+Type=Application
+Categories=System;
+Keywords=Linux;distribution;ISO;USB;virtual machine;
+StartupNotify=true
