@@ -24,8 +24,8 @@ fn run_mac_command(exe_path: &PathBuf, args: &[&str]) -> std::io::Result<std::pr
 }
 
 pub fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> {
-
-    let args = vec![blockdev, isoimg, flashmode]; //the original arguments get shadowed later 
+    
+    let mut args = vec![blockdev, isoimg, flashmode]; //the original arguments get shadowed later 
 
     if Uid::current().is_root(){
         info!("looking for blockdev and iso");
@@ -69,13 +69,17 @@ pub fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> 
     info!("found");
 
 
+    
+    if !Path::new("/.flatpak-info").exists(){
+    let dev_path = format!("/dev/{}", args[0]);
+    args[0] = &dev_path;
     #[cfg(target_os = "linux")]
     let status = Command::new("pkexec") 
         .arg(&exe_path)
         .arg("-f")
         .args(&args)
         .status()?;
-        
+    
     #[cfg(target_os = "macos")]
     let status = run_mac_command(&exe_path, &args).unwrap_or_default();
 
@@ -85,6 +89,7 @@ pub fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> 
             format!("pkexec exited with {status}")
         ));
     }
+}
 
  }
     Ok(())

@@ -6,7 +6,7 @@ const ROOT: &str = "/org/freedesktop/UDisks2/block_devices";
 
 pub async fn flasher(iso: PathBuf, dev: PathBuf) -> Result<(), Box<dyn Error + Send + Sync>> {
     let name = dev.file_name().unwrap().to_str().unwrap().to_owned();
-    let sys = fs::canonicalize(format!("/sys/class/block/{name}"))?;
+    let sys = PathBuf::from(format!("/sys/class/block/{name}"));
     let removable = fs::read_to_string(sys.join("removable")).map_or(false, |s| s.trim() == "1");
     if !(removable || sys.to_string_lossy().contains("/usb")) {
         return Err("refusing: not a USB or removable device".into());

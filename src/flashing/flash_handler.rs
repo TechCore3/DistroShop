@@ -67,7 +67,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
                             value: "{blockdev}",
                             onchange: move |evt| blockdev.set(evt.value()),
                             for entry in devices {
-                                option { value: "/dev/{entry}", "{entry}" }
+                                option { value: "{entry}", "{entry}" }
                             }
                         }
                     }
@@ -122,8 +122,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
 {
     let distro_to_download = distro.clone();
     let blockdev_for_flash = blockdev.to_string();
-    let mut iso_filename = get_cache_dir().to_string_lossy().into_owned();
-    iso_filename.push_str(&distro.filename);
+    let iso_filename = get_cache_dir().join(&distro.filename);
     let flashmode_for_flash = flashmode.clone();
 
     
@@ -132,10 +131,10 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
             status.set("Downloading iso image... (will take a while)".to_string());
             match download_distro(distro_to_download).await {
              Ok(_) => {
-                status.set("Flashing to block device (ui should freeze)".to_string()); //can't be unintended behavior if bugs are intended
+                status.set("Flashing to block device (ui should freeze)".to_string()); //feature not bug
                 tokio::time::sleep(Duration::from_millis(100)).await;
                 #[cfg(unix)] 
-                match flasher_unix::flasher(&blockdev_for_flash, &iso_filename, &flashmode_for_flash) {
+                match flasher_unix::flasher(&blockdev_for_flash, iso_filename.to_string_lossy().as_ref(), &flashmode_for_flash) {
                     Ok(()) => {
                         status.set("Successfully flashed iso image!".to_string());
                     }
@@ -162,11 +161,7 @@ pub async fn download_distro(distro: list_handler::distro) -> Result<(), Box<dyn
     let response = reqwest::get(distro.downloadlink).await?.error_for_status()?;
     info!("got headers: {} len={:?}", response.status(), response.content_length());
 
-    let mut file_path = PathBuf::from(get_cache_dir());
-    if !file_path.exists(){
-    fs::create_dir_all(&file_path)?; // already creating if list isnt found but may be an edge case; flash_handler/ln89
-    }
-    file_path.push(distro.filename);
+    let file_path = PathBuf::from(get_cache_dir()).join(&distro.filename);
 
     let contents = response.bytes().await?;
     info!("got body: {} bytes", contents.len());
