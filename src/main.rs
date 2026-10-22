@@ -4,6 +4,7 @@ use std::io;
 use dioxus::desktop::{Config, WindowBuilder};
 use dioxus::desktop::tao::window::Icon;
 use crate::list_handler::distro_list;
+#[cfg(target_os = "linux")]
 
 pub mod distro_testing;
 pub mod flashing;
@@ -39,9 +40,11 @@ fn main() -> io::Result<()> {
             .with_cfg(
                 Config::new()
                     .with_icon(load_icon()) //works on literally everything BUT wayland
+                    .with_menu(None)
                     .with_window(WindowBuilder::new().with_title("DistroShop")),
             )
-            .launch(app); 
+            .launch(app);
+
     }
     Ok(())
 }

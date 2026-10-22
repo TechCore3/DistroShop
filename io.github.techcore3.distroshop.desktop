@@ -1,8 +1,10 @@
+#!/usr/bin/env xdg-open
 [Desktop Entry]
 Name=DistroShop
 Comment=Browse, test, and flash Linux distribution images
-Exec=distro-shop
-TryExec=distro-shop
+Exec=io.github.techcore3.distroshop
+TryExec=io.github.techcore3.distroshop
+StartupWMClass=io.github.techcore3.distroshop
 Icon=io.github.techcore3.distroshop
 Terminal=false
 Type=Application

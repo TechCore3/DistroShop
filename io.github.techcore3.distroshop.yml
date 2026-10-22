@@ -1,10 +1,10 @@
 app-id: io.github.techcore3.distroshop
 runtime: org.gnome.Platform
-runtime-version: '50'
+runtime-version: '51'
 sdk: org.gnome.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.rust-stable//26.08
-command: distro-shop
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: io.github.techcore3.distroshop
 
 build-options:
   append-path: /usr/lib/sdk/rust-stable/bin
@@ -22,7 +22,8 @@ finish-args:
   - --device=input
   - --device=kvm # for qemu
   - --system-talk-name=org.freedesktop.UDisks2 # for flashing isos
-  - --socket=pulseaudio   
+  - --socket=pulseaudio
+  - --env=GTK_THEME=Adwaita:dark
 
 modules:
   - name: libslirp
@@ -68,12 +69,14 @@ modules:
         url: https://github.com/jordansissel/xdotool.git
         tag: v3.20211022.1
         commit: eb489de1b4fb3fd0cd935d68ae16ecd4c653ac7d
+
   - name: distro-shop
     buildsystem: simple
     build-commands:
       - cargo --offline fetch --manifest-path Cargo.toml --verbose
       - cargo build --offline --release
       - install -Dm755 target/release/distro-shop /app/bin/distro-shop
+      - ln -s distro-shop /app/bin/io.github.techcore3.distroshop
       - install -Dm644 io.github.techcore3.distroshop.desktop /app/share/applications/io.github.techcore3.distroshop.desktop
       - install -Dm644 io.github.techcore3.distroshop.metainfo.xml /app/share/metainfo/io.github.techcore3.distroshop.metainfo.xml
       - install -Dm644 assets/logo.png /app/share/icons/hicolor/256x256/apps/io.github.techcore3.distroshop.png
