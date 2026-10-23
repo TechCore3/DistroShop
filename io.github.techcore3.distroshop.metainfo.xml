@@ -23,7 +23,7 @@
   <content_rating type="oars-1.1"/>
   <launchable type="desktop-id">io.github.techcore3.distroshop.desktop</launchable>
   <releases>
-  <release version="1.0.2" date="2026-10-22">
+  <release version="1.0.3" date="2026-10-23">
     <description>
       <p>First stable Flatpak release.</p>
     </description>
