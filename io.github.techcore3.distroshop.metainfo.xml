@@ -25,7 +25,7 @@
   <releases>
   <release version="1.0.3" date="2026-10-23">
     <description>
-      <p>First stable Flatpak release.</p>
+      <p>Fixed bug that made VMs not download their respective isos if missing</p>
     </description>
   </release>
 </releases>
