@@ -11,12 +11,8 @@ fn find_qemu() -> Option<std::path::PathBuf> {
         .map(|dir| dir.join("qemu-system-x86_64"))
         .find(|p| p.is_file())
 }
-fn download_handler(distro_for_download: list_handler::distro) -> io::Result<()> {
-    spawn(async move {
-        flash_handler::download_distro(distro_for_download).await.unwrap();
-    });
-    Ok(())
-}
+
+        
 
 #[component]
 pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mut status: Signal<String>) -> Element {
@@ -29,7 +25,7 @@ pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mu
         let cpu_cores = vm_cpu_cores;
 
         spawn_forever(async move {
-            if let Err(err) = run_vm(distro, ram_mb, cpu_cores).await {
+            if let Err(err) = run_vm(distro, ram_mb, cpu_cores, status).await {
                 status.set(format!("Failed to start VM: {err}"));
             }
         });
@@ -63,7 +59,7 @@ pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mu
     }
 }
 
-pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores: Signal<u8>) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores: Signal<u8>, mut status: Signal<String>) -> Result<(), Box<dyn std::error::Error>> {
     
 
     let mut qemu_path = find_qemu().unwrap_or_default();
@@ -82,8 +78,8 @@ pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores
     iso_path.push(&distro.filename);
     if !iso_path.exists() {
         let distro_for_download = distro.clone();
-        download_handler(distro_for_download).unwrap();
-
+        status.set("Downloading Distro (this will take a while)".to_string());
+        flash_handler::download_distro(distro_for_download).await?;
     }
     let iso_arg = iso_path.display().to_string().replace(',', ",,");
     let acceleration = {

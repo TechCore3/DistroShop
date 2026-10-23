@@ -128,7 +128,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
     
         spawn_forever(async move {
 
-            status.set("Downloading iso image... (will take a while)".to_string());
+            status.set("Downloading iso image (will take a while)".to_string());
             match download_distro(distro_to_download).await {
              Ok(_) => {
                 status.set("Flashing to block device (ui should freeze)".to_string()); //feature not bug
