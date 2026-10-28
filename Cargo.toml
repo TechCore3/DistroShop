@@ -32,3 +32,22 @@ mobile = ["dioxus/mobile"]
 
 [patch.crates-io]
 dioxus-desktop = { path = "vendor/dioxus-desktop" }
+
+[package.metadata.deb]
+depends = "$auto"
+assets = [
+  ["target/release/distro-shop", "usr/bin/", "755"],
+  ["packaging/distro-shop.desktop", "usr/share/applications/", "644"],
+  ["packaging/distro-shop.png", "usr/share/icons/hicolor/256x256/apps/", "644"],
+]
+
+[package.metadata.generate-rpm]
+assets = [
+  { source = "target/release/distro-shop", dest = "/usr/bin/distro-shop", mode = "755" },
+  { source = "packaging/distro-shop.desktop", dest = "/usr/share/applications/distro-shop.desktop", mode = "644" },
+  { source = "packaging/distro-shop.png", dest = "/usr/share/icons/hicolor/256x256/apps/distro-shop.png", mode = "644" },
+]
+
+[package.metadata.generate-rpm.requires]
+webkit2gtk4_1 = "*"
+gtk3 = "*"

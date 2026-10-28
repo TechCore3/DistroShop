@@ -1,4 +1,5 @@
 # DistroShop
+<img src="assets/screenshotmain.png" alt="main page screenshot" width="600" height="400">
 
 A small desktop app for browsing distro images, testing them in a VM, and flashing them to a USB stick.
 
@@ -14,8 +15,8 @@ A small desktop app for browsing distro images, testing them in a VM, and flashi
 
 ## Current status
 
-Supported on MacOS, Windows, and Linux.
-Windows is only supported on x86_64. All others are supported on both x86_64 and arm64.
+The app is being developed mainly for Linux, hence why only those binaries are built.
+Mileage with non-Linux builds may vary.
 
 
 ## Requirements
