@@ -48,7 +48,13 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
         println!("{blockdev}");
         if !blockdev.read().is_empty() {
             show_form.set(false);
-            download_and_flash_handler(&distro, &blockdev.read().clone(), selected(), status).unwrap();
+            let distro = distro.clone();
+            let blockdev = blockdev.read().clone();
+            let flashmode = selected();
+            let status = status.clone();
+            spawn_forever(async move {
+                download_and_flash_handler(&distro, &blockdev, flashmode, status).await.unwrap();
+            });
         } else {
             status.set("Please enter a valid device!".to_string());
         }
@@ -113,7 +119,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
     }
 
 
- fn download_and_flash_handler(
+ async fn download_and_flash_handler(
     distro: &list_handler::distro,
     blockdev: &String,
     flashmode: String,
@@ -124,33 +130,28 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
     let blockdev_for_flash = blockdev.to_string();
     let iso_filename = get_cache_dir().join(&distro.filename);
     let flashmode_for_flash = flashmode.clone();
-
-    
-        spawn_forever(async move {
-
-            status.set("Downloading iso image (will take a while)".to_string());
-            match download_distro(distro_to_download).await {
-             Ok(_) => {
-                status.set("Flashing to block device (ui should freeze)".to_string()); //feature not bug
-                tokio::time::sleep(Duration::from_millis(100)).await;
-                #[cfg(unix)] 
-                match flasher_unix::flasher(&blockdev_for_flash, iso_filename.to_string_lossy().as_ref(), &flashmode_for_flash) {
-                    Ok(()) => {
-                        status.set("Successfully flashed iso image!".to_string());
-                    }
-                    Err(e) => status.set(format!("Flashing failed: {e}")),
-                }
-                #[cfg(target_os = "windows")]
-                match flasher_win::flasher(&blockdev_for_flash, &iso_filename, &flashmode_for_flash) {
+    status.set("Downloading iso image (will take a while)".to_string());
+    match download_distro(distro_to_download).await {
+        Ok(_) => {
+            status.set("Flashing to block device (ui should freeze)".to_string()); //feature not bug
+            tokio::time::sleep(Duration::from_millis(100)).await;
+            #[cfg(unix)] 
+            match flasher_unix::flasher(&blockdev_for_flash, iso_filename.to_string_lossy().as_ref(), &flashmode_for_flash).await {
                 Ok(()) => {
                     status.set("Successfully flashed iso image!".to_string());
-                }
+                    }
                 Err(e) => status.set(format!("Flashing failed: {e}")),
-                }
             }
+            #[cfg(target_os = "windows")]
+            match flasher_win::flasher(&blockdev_for_flash, &iso_filename, &flashmode_for_flash) {
+            Ok(()) => {
+            status.set("Successfully flashed iso image!".to_string());
+            }
+            Err(e) => status.set(format!("Flashing failed: {e}")),
+            }
+        }
         Err(e) => status.set(format!("Download failed: {e}")),
-            }
-        });
+        }
 
     Ok(())
 }

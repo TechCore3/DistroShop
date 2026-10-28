@@ -23,7 +23,7 @@ fn run_mac_command(exe_path: &PathBuf, args: &[&str]) -> std::io::Result<std::pr
         .status()?)
 }
 
-pub fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> {
+pub async fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> {
     
     let mut args = vec![blockdev, isoimg, flashmode]; //the original arguments get shadowed later 
 
