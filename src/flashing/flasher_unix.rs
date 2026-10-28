@@ -1,8 +1,8 @@
 use std::io;
 use std::io::{Read, Write};
+use tokio::process::Command;
 use nix::unistd::Uid;
 use std::env;
-use std::process::Command;
 use std::fs::File;
 use dioxus::prelude::*;
 #[cfg(target_os = "macos")]
@@ -78,7 +78,7 @@ pub async fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Resul
         .arg(&exe_path)
         .arg("-f")
         .args(&args)
-        .status()?;
+        .status().await?;
     
     #[cfg(target_os = "macos")]
     let status = run_mac_command(&exe_path, &args).unwrap_or_default();
