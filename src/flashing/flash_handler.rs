@@ -133,7 +133,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
     status.set("Downloading iso image".to_string()); //still a problem on flatpak
     match download_distro(distro_to_download).await {
         Ok(()) => {
-            status.set("Flashing to block device (ui should freeze)".to_string()); //feature not bug
+            status.set(format!("Flashing to device"));
             tokio::time::sleep(Duration::from_millis(100)).await;
             #[cfg(unix)] 
             match flasher_unix::flasher(&blockdev_for_flash, iso_filename.to_string_lossy().as_ref(), &flashmode_for_flash).await {

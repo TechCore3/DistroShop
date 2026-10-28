@@ -1,6 +1,7 @@
 use std::io;
 use std::io::{Read, Write};
 use tokio::process::Command;
+use std::process::Stdio;
 use nix::unistd::Uid;
 use std::env;
 use std::fs::File;
@@ -9,6 +10,7 @@ use dioxus::prelude::*;
 use std::path::PathBuf;
 use std::path::{Path, PathBuf};
 use crate::flashing::udisks2_wrapper;
+
 
 #[cfg(target_os = "macos")]
 fn run_mac_command(exe_path: &PathBuf, args: &[&str]) -> std::io::Result<std::process::ExitStatus> {
@@ -22,6 +24,7 @@ fn run_mac_command(exe_path: &PathBuf, args: &[&str]) -> std::io::Result<std::pr
         .arg(script)
         .status()?)
 }
+
 
 pub async fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Result<()> {
     
@@ -74,21 +77,29 @@ pub async fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Resul
     let dev_path = format!("/dev/{}", args[0]);
     args[0] = &dev_path;
     #[cfg(target_os = "linux")]
-    let status = Command::new("pkexec") 
+    {
+    let mut status = Command::new("pkexec") 
         .arg(&exe_path)
         .arg("-f")
         .args(&args)
-        .status().await?;
-    
+        .stdout(Stdio::piped())
+        .kill_on_drop(true)
+        .spawn()?;
+    let status = status.wait().await?;
+    if !status.success() {
+        return Err(io::Error::other(format!("pkexec exited with {status}")));
+    }
+    }
     #[cfg(target_os = "macos")]
+    {
     let status = run_mac_command(&exe_path, &args).unwrap_or_default();
-
     if !status.success() {
         return Err(io::Error::new(
             io::ErrorKind::Other,
             format!("pkexec exited with {status}")
         ));
     }
+}
 }
 
  }

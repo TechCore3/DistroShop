@@ -31,9 +31,10 @@ fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 {
         #[cfg(any(target_os = "linux", target_os = "macos"))] 
+        {
         let runtime = tokio::runtime::Builder::new_current_thread().build()?;
         runtime.block_on(flashing::flasher_unix::flasher(&args[2], &args[3], &args[4])).unwrap();
-
+        }
         #[cfg(target_os = "windows")]
         flashing::flasher_win::flasher(&args[2], &args[3], &args[4])?;
     } else {
