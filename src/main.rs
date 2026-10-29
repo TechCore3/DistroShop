@@ -6,6 +6,7 @@ use dioxus::desktop::tao::window::Icon;
 use crate::list_handler::distro_list;
 #[cfg(target_os = "linux")]
 
+pub mod options;
 pub mod distro_testing;
 pub mod flashing;
 pub mod list_handler;

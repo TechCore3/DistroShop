@@ -1,4 +1,5 @@
 use crate::flashing::flash_handler;
+use crate::options::options_menu;
 use dioxus::prelude::*;
 use serde::Deserialize;
 use serde_json;
@@ -32,6 +33,11 @@ pub fn get_cache_dir() -> PathBuf {
     cache_dir
 }
 
+pub fn get_config_dir() -> PathBuf {
+    let mut config_dir = dirs::config_dir().expect("unable to find cache directory!");
+    config_dir.push("distroshop"); 
+    config_dir
+}
 
 
 
@@ -50,7 +56,7 @@ pub fn distro_list() -> Element {
     let mut is_loading = use_signal(|| false);
     let mut active_distro_id = use_signal(|| None::<u8>);
     let mut is_showing_more = use_signal(|| false);
-
+    let mut is_showing_options = use_signal(|| false);
     use_effect(move || {
         spawn(async move {
                 info!("list not found locally. downloading.");
@@ -101,11 +107,17 @@ pub fn distro_list() -> Element {
     rsx! {
         document::Style { "{CSS}" }
         div { class: "app-shell",
+            //
+            
             div { class: "toolbar",
                 div { class: "toolbar-copy",
                     h1 { class: "app-title", "DistroShop" }
                 }
+            if !is_showing_options() {
                 div { class: "toolbar-actions",
+                    button {
+                        class: "primary-button", onclick: move |_| is_showing_options.set(true) ,"Options"
+                    }
                     button { class: "primary-button", onclick: handle_manual_sync, disabled: is_loading(),
                         if is_loading() {
                             "Syncing..."
@@ -115,38 +127,43 @@ pub fn distro_list() -> Element {
                     }
                 }
             }
-            p { class: "status-line", "{status_signal}" }
-            
-            div {
-                id: "distrolist",
-                for distro in distros.iter().cloned().collect::<Vec<_>>() {
-                    
-                    li { class: "distro-card",
-                        div { class: "distro-image-frame",
-                            img {
-                                class: "distro-image",
-                                src: "{distro.image}",
+            }
+            if !is_showing_options() {
+                p { class: "status-line", "{status_signal}" }
+
+                div {
+                    id: "distrolist",
+                    for distro in distros.iter().cloned().collect::<Vec<_>>() {
+
+                        li { class: "distro-card",
+                            div { class: "distro-image-frame",
+                                img {
+                                    class: "distro-image",
+                                    src: "{distro.image}",
+                                }
+                            }
+                            div { class: "distro-details",
+                                h3 { class: "distro-title", "{distro.name}" }
+                                p { class: "distro-description", "{distro.description}" }
+                            }
+                            div { class: "distro-actions",
+                                button {
+                                    class: "distro-button",
+                                    onclick: move |_| {
+                                        active_distro_id.set(Some(distro.id));
+                                        is_showing_more.set(true);
+                                    },
+                                    "Show more"
+                                }
                             }
                         }
-                        div { class: "distro-details",
-                            h3 { class: "distro-title", "{distro.name}" }
-                            p { class: "distro-description", "{distro.description}" }
+                        if active_distro_id() == Some(distro.id) && is_showing_more() {
+                            flash_handler::show_more { distro: distro.clone(), is_showing: is_showing_more }
                         }
-                        div { class: "distro-actions",
-                            button {
-                                class: "distro-button",
-                                onclick: move |_| {
-                                    active_distro_id.set(Some(distro.id));
-                                    is_showing_more.set(true);
-                                },
-                                "Show more"
-                            }
-                        }
-                    }
-                    if active_distro_id() == Some(distro.id) && is_showing_more() {
-                        flash_handler::show_more { distro: distro.clone(), is_showing: is_showing_more }
                     }
                 }
+            } else {
+                options_menu::options_menu {  }
             }
         }
     }

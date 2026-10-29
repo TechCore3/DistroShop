@@ -1,5 +1,4 @@
 use std::io;
-use std::io::{Read, Write};
 use tokio::process::Command;
 use std::process::Stdio;
 use nix::unistd::Uid;
@@ -42,13 +41,13 @@ pub async fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Resul
             io::copy(&mut isoimg, &mut blockdev)?;
             blockdev.sync_all()?;
         }
-        "fast" => {
+        /*"fast" => {
             info!("using fast mode");
             let mut buffer = Vec::new();
             isoimg.read_to_end(&mut buffer)?;
             blockdev.write_all(&buffer)?;
             blockdev.sync_all()?;
-        }
+        }*/ // deprecated
         _ => {
             error!("invalid flash mode");
             std::process::exit(1);

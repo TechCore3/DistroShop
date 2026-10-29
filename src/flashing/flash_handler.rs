@@ -1,5 +1,4 @@
 use crate::list_handler::{self, get_cache_dir};
-use std::path::Path;
 use dioxus::core::spawn_forever;
 //use dioxus::core::spawn_forever;
 use dioxus::prelude::*;
@@ -26,7 +25,7 @@ fn sha256_bytes(data: &[u8]) -> String {
 fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut status: Signal<String>, mut show_button: Signal<bool>) -> Element {
     show_button.set(false);
     let mut blockdev = use_signal(String::new);
-    let mut selected = use_signal(|| "safe".to_string());
+    let selected = use_signal(|| "safe".to_string()); 
     let devices = fs::read_dir("/sys/block/")
         .into_iter()
         .flatten()
@@ -92,22 +91,6 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
                 }
                     }
                 }
-                }
-            
-
-                {if !Path::new("/.flatpak-info").exists(){ rsx!{
-            div { class: "form-field",
-                label { class: "form-label", "Flash mode" }
-                select {
-                    class: "form-select",
-                    value: "{selected}",
-                    onchange: move |evt| selected.set(evt.value()),
-                    option {value: "fast", "Fast"}
-                    option {value: "safe", "Safe"}
-                }
-            }
-        }}
-        else {rsx!{}}
                 }
         
             div { class: "form-actions",
