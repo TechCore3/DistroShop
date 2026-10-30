@@ -10,7 +10,7 @@ const DEFAULTCONFIGGITHUB: &str =
 
 
 
-//static CSS: &str = include_str!("../../assets/main.css");
+static CSS: &str = include_str!("../../assets/main.css");
 
 pub async fn download_default_config() -> std::result::Result<(), Box<dyn std::error::Error>> {
     if !get_config_dir().exists() {
@@ -29,10 +29,27 @@ pub fn parse_config() -> Result<Settings, Box<dyn std::error::Error>> {
     Ok(settings)
 }
 
+
+
 #[component]
 pub fn options_menu() -> Element {
+    let mut settings = use_signal(||parse_config().unwrap_or_default());
     rsx! {
-        h1 {"check hash: settings.check_hash"}
-        h1 {"use udisks2: settings.use_udisks2"}
+        document::Style { "{CSS}" }
+        div{
+        h1 {"check hash: {settings().check_hash}"}
+        button{class: "primary-button", onclick: move |_| {
+            let mut settings = settings.write();
+            settings.check_hash = !settings.check_hash;
+        },"toggle"}
+        }
+        div{
+        h1 {"use udisks2: {settings().use_udisks2}"}
+        button{class: "primary-button", onclick: move |_| {
+            let mut settings = settings.write();
+            settings.use_udisks2 = !settings.use_udisks2;
+        },"toggle"}
+        }
+
     }
 }

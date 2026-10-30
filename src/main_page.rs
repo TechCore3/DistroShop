@@ -128,6 +128,11 @@ pub fn distro_list() -> Element {
                 div { class: "toolbar-copy",
                     h1 { class: "app-title", "DistroShop" }
                 }
+                if is_showing_options(){
+                    div {
+                        class: "primary-button", onclick: move |_| is_showing_options.set(false), "Back"
+                    }
+                }
             if !is_showing_options() {
                 div { class: "toolbar-actions",
                     button {
@@ -178,7 +183,7 @@ pub fn distro_list() -> Element {
                     }
                 }
             } else {
-                
+                options_menu {  }
             }
         }
     }
