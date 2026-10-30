@@ -130,7 +130,7 @@ pub fn distro_list() -> Element {
                 }
                 if is_showing_options(){
                     div {
-                        class: "primary-button", onclick: move |_| is_showing_options.set(false), "Back"
+                        class: "primary-button", onclick: move |_| {is_showing_options.set(false)}, "Back"
                     }
                 }
             if !is_showing_options() {

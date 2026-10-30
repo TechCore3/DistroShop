@@ -1,8 +1,8 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 pub mod options_menu;
 
-#[derive(Deserialize, Clone, Copy, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq)]
 pub struct Settings{
     pub check_hash: bool,
     pub use_udisks2: bool,
