@@ -9,6 +9,7 @@ use dioxus::prelude::*;
 use std::path::PathBuf;
 use std::path::{Path, PathBuf};
 use crate::flashing::udisks2_wrapper;
+use crate::options::options_menu::*;
 
 
 #[cfg(target_os = "macos")]
@@ -54,7 +55,7 @@ pub async fn flasher(blockdev: &str, isoimg: &str, flashmode: &str) -> io::Resul
         }
     }
  } else {
-    if Path::new("/.flatpak-info").exists() {
+    if Path::new("/.flatpak-info").exists() || parse_config().unwrap_or_default().use_udisks2 == true  {
     let (iso, dev) = (PathBuf::from(isoimg), PathBuf::from(blockdev));
     return std::thread::spawn(move || -> io::Result<()> {
         tokio::runtime::Builder::new_current_thread()

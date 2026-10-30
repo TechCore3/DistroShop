@@ -3,13 +3,13 @@ use dioxus::prelude::*;
 use std::io;
 use dioxus::desktop::{Config, WindowBuilder};
 use dioxus::desktop::tao::window::Icon;
-use crate::list_handler::distro_list;
+use crate::main_page::distro_list;
 #[cfg(target_os = "linux")]
 
 pub mod options;
 pub mod distro_testing;
 pub mod flashing;
-pub mod list_handler;
+pub mod main_page;
 static CSS: &str = include_str!("../assets/main.css");
 
 fn load_icon() -> Icon {

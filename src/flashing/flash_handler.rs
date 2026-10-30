@@ -1,6 +1,6 @@
-use crate::list_handler::{self, get_cache_dir};
+use crate::main_page::{self, get_cache_dir};
 use dioxus::core::spawn_forever;
-//use dioxus::core::spawn_forever;
+use crate::options::options_menu::*;
 use dioxus::prelude::*;
 use crate::distro_testing::vm_handler;
 use std::fs;
@@ -22,7 +22,7 @@ fn sha256_bytes(data: &[u8]) -> String {
         .collect()
 }
 #[component]
-fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut status: Signal<String>, mut show_button: Signal<bool>) -> Element {
+fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: Signal<String>, mut show_button: Signal<bool>) -> Element {
     show_button.set(false);
     let mut blockdev = use_signal(String::new);
     let selected = use_signal(|| "safe".to_string()); 
@@ -103,7 +103,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
 
 
  async fn download_and_flash_handler(
-    distro: &list_handler::distro,
+    distro: &main_page::distro,
     blockdev: &String,
     flashmode: String,
     mut status: Signal<String>,
@@ -141,7 +141,7 @@ fn form_handler(distro: list_handler::distro, show_form: Signal<bool>, mut statu
     Ok(())
 }
 
-pub async fn download_distro(distro: list_handler::distro) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn download_distro(distro: main_page::distro) -> Result<(), Box<dyn std::error::Error>> {
     let distro= distro.clone();
     info!{"requesting {}", distro.downloadlink};
     let response = reqwest::get(distro.downloadlink).await?.error_for_status()?;
@@ -151,21 +151,21 @@ pub async fn download_distro(distro: list_handler::distro) -> Result<(), Box<dyn
 
     let contents = response.bytes().await?;
     info!("got body: {} bytes", contents.len());
+    if parse_config().unwrap_or_default().check_hash == true {
     if sha256_bytes(&contents) == distro.sha256 {
     info!("checksum does match");
     fs::write(&file_path, contents)?;
     info!("wrote {:?}", file_path);
     } else {
         return Err(Box::<dyn std::error::Error>::from("Checksum of the downloaded ISO does not match!".to_string()));
-    }
+    }}
     
-
     Ok(())
 }
 
 
 #[component]
-pub fn show_more(distro: list_handler::distro, is_showing: Signal<bool>) -> Element {
+pub fn show_more(distro: main_page::distro, is_showing: Signal<bool>) -> Element {
     let mut show_form = use_signal(|| false);
     let mut show_button = use_signal(|| true);
     let mut show_form_vm = use_signal(|| false);

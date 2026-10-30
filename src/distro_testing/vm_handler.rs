@@ -1,4 +1,4 @@
-use crate::list_handler::{self, get_cache_dir};
+use crate::main_page::{self, get_cache_dir};
 use std::{io, process::Command};
 use dioxus::prelude::*;
 use dioxus::core::spawn_forever;
@@ -15,7 +15,7 @@ fn find_qemu() -> Option<std::path::PathBuf> {
         
 
 #[component]
-pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mut status: Signal<String>) -> Element {
+pub fn form_handler(distro: main_page::distro, show_form_vm: Signal<bool>, mut status: Signal<String>) -> Element {
     let distro = distro.clone();
     let mut vm_ram_mb: Signal<u32> = use_signal(|| 2048);
     let mut vm_cpu_cores: Signal<u8> = use_signal(|| 2);
@@ -59,7 +59,7 @@ pub fn form_handler(distro: list_handler::distro, show_form_vm: Signal<bool>, mu
     }
 }
 
-pub async fn run_vm(distro: list_handler::distro, ram_mb: Signal<u32>, cpu_cores: Signal<u8>, mut status: Signal<String>) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn run_vm(distro: main_page::distro, ram_mb: Signal<u32>, cpu_cores: Signal<u8>, mut status: Signal<String>) -> Result<(), Box<dyn std::error::Error>> {
     
 
     let mut qemu_path = find_qemu().unwrap_or_default();

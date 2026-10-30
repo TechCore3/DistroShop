@@ -1,5 +1,5 @@
 use crate::flashing::flash_handler;
-use crate::options::options_menu;
+use crate::options::options_menu::*;
 use dioxus::prelude::*;
 use serde::Deserialize;
 use serde_json;
@@ -59,14 +59,28 @@ pub fn distro_list() -> Element {
     let mut is_showing_options = use_signal(|| false);
     use_effect(move || {
         spawn(async move {
-                info!("list not found locally. downloading.");
+                info!("Downloading list");
                 status_signal.set("Downloading...".to_string());
                 is_loading.set(true);
                 let cachedir = get_cache_dir();
                 if !cachedir.exists(){
-                fs::create_dir(cachedir).expect("unable to create config directory! (~/.cache/distroshop/)");
+                fs::create_dir(cachedir).expect("unable to create cache directory! (~/.cache/distroshop/)");
                 }
-                
+                let configdir = get_config_dir();
+                if !configdir.exists(){
+                fs::create_dir(configdir).expect("unable to create config directory! (~/.config/distroshop/)");
+                }
+                if !get_config_dir().join("config.json").exists() {
+                    match download_default_config().await {
+                    Ok(()) => {
+                        status_signal.set("".to_string());
+                    }
+                    Err(e) => {
+                        error!("download failed: {e}");
+                        status_signal.set(format!("Download failed! {e}"));
+                    }
+                }
+                }
                 match load_list().await {
                     Ok(items) => {
                         items_signal.set(items);
@@ -104,6 +118,7 @@ pub fn distro_list() -> Element {
         });
     };
     let distros = items_signal.read();
+    //let settings = parse_config().unwrap_or_default();
     rsx! {
         document::Style { "{CSS}" }
         div { class: "app-shell",
@@ -163,7 +178,7 @@ pub fn distro_list() -> Element {
                     }
                 }
             } else {
-                options_menu::options_menu {  }
+                
             }
         }
     }
