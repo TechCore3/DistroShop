@@ -43,7 +43,7 @@ pub fn options_menu() -> Element {
         },"toggle"}
         }
         div{
-        h1 {"Use udisks2 for flashing: {settings().use_udisks2}"}
+        h1 {"Use udisks2 for flashing (must be true on flatpak): {settings().use_udisks2}"}
         button{class: "secondary-button", onclick: move |_| {
             let mut settings = settings.write();
             settings.use_udisks2 = !settings.use_udisks2;
