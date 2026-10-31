@@ -1,23 +1,15 @@
 use dioxus::prelude::*;
 use serde_json;
-use reqwest;
 use std::io::Write;
 use std::fs::{self, File};
 use crate::options::Settings;
 use crate::main_page::get_config_dir;
-const DEFAULTCONFIGGITHUB: &str =
-    "https://raw.githubusercontent.com/TechCore3/DistroShop/refs/heads/main/assets/config.json";
-
-
 
 static CSS: &str = include_str!("../../assets/main.css");
 
-pub async fn download_default_config() -> std::result::Result<(), Box<dyn std::error::Error>> {
-    if !get_config_dir().exists() {
-        fs::create_dir(get_config_dir())?;
-    }
-    let response = reqwest::get(DEFAULTCONFIGGITHUB).await?;
-    let json_text = response.text().await?;
+pub async fn write_default_config() -> std::result::Result<(), Box<dyn std::error::Error>> {
+    let default = Settings::default();
+    let json_text = serde_json::to_string_pretty(&default).unwrap();
     let mut file = File::create(get_config_dir().join("config.json"))?;
     file.write_all(json_text.as_bytes())?;
     Ok(())
@@ -42,20 +34,22 @@ pub fn options_menu() -> Element {
     let mut status = use_signal(||"".to_string());
     rsx! {
         document::Style { "{CSS}" }
+        div{ class: "modal-form",
         div{
-        h1 {"check hash: {settings().check_hash}"}
+        h1 {"Check sha256 hash: {settings().check_hash}"}
         button{class: "secondary-button", onclick: move |_| {
             let mut settings = settings.write();
             settings.check_hash = !settings.check_hash;
         },"toggle"}
         }
         div{
-        h1 {"use udisks2: {settings().use_udisks2}"}
+        h1 {"Use udisks2 for flashing: {settings().use_udisks2}"}
         button{class: "secondary-button", onclick: move |_| {
             let mut settings = settings.write();
             settings.use_udisks2 = !settings.use_udisks2;
         },"toggle"}
         }
+    }
         div { class: "toolbar",
                 div { class: "toolbar-copy",
                 }

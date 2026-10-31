@@ -71,13 +71,13 @@ pub fn distro_list() -> Element {
                 fs::create_dir(configdir).expect("unable to create config directory! (~/.config/distroshop/)");
                 }
                 if !get_config_dir().join("config.json").exists() {
-                    match download_default_config().await {
+                    match write_default_config().await {
                     Ok(()) => {
                         status_signal.set("".to_string());
                     }
                     Err(e) => {
-                        error!("download failed: {e}");
-                        status_signal.set(format!("Download failed! {e}"));
+                        error!("write failed: {e}");
+                        status_signal.set(format!("Default write failed! {e}"));
                     }
                 }
                 }
@@ -136,7 +136,7 @@ pub fn distro_list() -> Element {
             if !is_showing_options() {
                 div { class: "toolbar-actions",
                     button {
-                        class: "primary-button", onclick: move |_| is_showing_options.set(true) ,"Options"
+                        class: "primary-button", onclick: move |_| is_showing_options.set(true),"Options"
                     }
                     button { class: "primary-button", onclick: handle_manual_sync, disabled: is_loading(),
                         if is_loading() {
