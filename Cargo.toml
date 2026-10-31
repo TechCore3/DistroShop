@@ -1,6 +1,6 @@
 [package]
 name = "distro-shop"
-version = "1.1.0"
+version = "1.2.0"
 description = "Browse, download and flash Linux distro ISOs"
 authors = ["TechCore3"]
 edition = "2021"

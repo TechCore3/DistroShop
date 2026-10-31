@@ -23,9 +23,9 @@
   <content_rating type="oars-1.1"/>
   <launchable type="desktop-id">io.github.techcore3.distroshop.desktop</launchable>
   <releases>
-  <release version="1.0.3" date="2026-10-23">
+  <release version="1.2.0" date="2026-10-31">
     <description>
-      <p>Fixed bug that made VMs not download their respective isos if missing</p>
+      <p>Added options menu</p>
     </description>
   </release>
 </releases>

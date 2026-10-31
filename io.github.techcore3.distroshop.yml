@@ -85,6 +85,6 @@ modules:
     sources:
       - type: git
         url: https://github.com/TechCore3/DistroShop.git
-        tag: v1.0.3
-        commit: 8aa7613ecc9f54f18b370feddf97ae7cb9d1b9f4
+        tag: v1.2.0
+        commit: a762dc9a9b4f3f40483ba79f37f77ca118de5763
       - cargo-sources.json
