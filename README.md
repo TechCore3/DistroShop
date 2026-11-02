@@ -21,24 +21,20 @@ Mileage with non-Linux builds may vary.
 
 ## Requirements
 
-- Rust and Cargo (if compiling from source)
+- Rust and Dioxus-cli (if compiling from source)
 - qemu-system (automatically included on flatpak)
 - A target USB device 
 - A graphical desktop environment
 
 ## Running the app
 
-I recommend using the prebuilt binary or the flatpak, but you can also run it  with cargo:
+I recommend using the prebuilt binary or the flatpak, but you can also run it  with dx:
 
 ```bash
-cargo run
+dx run
 ```
+Note: compiling and running with cargo will break some of the UI
 
-If you want the Dioxus dev workflow instead of the plain desktop app:
-
-```bash
-dx serve
-```
 
 ## Building the Flatpak
 
