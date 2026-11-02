@@ -1,6 +1,6 @@
 [package]
 name = "distro-shop"
-version = "1.2.0"
+version = "1.2.1"
 description = "Browse, download and flash Linux distro ISOs"
 authors = ["TechCore3"]
 edition = "2021"
@@ -9,6 +9,7 @@ license = "GPL-3.0-only"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+dioxus-primitives = { git = "https://github.com/DioxusLabs/components", version = "0.0.1", default-features = false }
 dioxus = { version = "0.7.1", features = [] }
 dirs = "7.0.0"
 image = "0.25.10"
@@ -23,6 +24,7 @@ runas = "1.2"
 is_elevated = "0.1"
 sha2 = "0.11.0"
 zbus = { version = "6.0.0", features = ["tokio"] }
+dioxus-icons = { version = "0.1.0", default-features = false }
 
 
 [features]
@@ -52,3 +54,5 @@ assets = [
 [package.metadata.generate-rpm.requires]
 webkit2gtk4_1 = "*"
 gtk3 = "*"
+
+

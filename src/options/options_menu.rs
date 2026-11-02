@@ -4,6 +4,8 @@ use std::io::Write;
 use std::fs::{self, File};
 use crate::options::Settings;
 use crate::main_page::get_config_dir;
+use dioxus_primitives::checkbox::CheckboxState;
+use crate::components::checkbox::Checkbox;
 
 static CSS: &str = include_str!("../../assets/main.css");
 
@@ -28,6 +30,29 @@ fn save_changes(settings: &Settings) -> Result<()> {
     Ok(())
 }
 
+fn state_assesser(entry: &str) -> CheckboxState {
+    match entry {
+        "udisks2" => {
+            if parse_config().unwrap_or_default().use_udisks2 {
+                return CheckboxState::Checked;
+            } else {
+                return CheckboxState::Unchecked;
+            }
+        },
+        "sha256" => {
+            if parse_config().unwrap_or_default().check_hash {
+                return CheckboxState::Checked;
+            } else {
+                return CheckboxState::Unchecked;
+            }
+        },
+        _ => {
+            error!("failed to parse struct for checkbox handling");
+            return CheckboxState::Indeterminate;
+        }
+    }
+}
+
 #[component]
 pub fn options_menu() -> Element {
     let mut settings = use_signal(||parse_config().unwrap_or_default());
@@ -35,19 +60,25 @@ pub fn options_menu() -> Element {
     rsx! {
         document::Style { "{CSS}" }
         div{ class: "modal-form",
-        div{
-        h1 {"Check sha256 hash: {settings().check_hash}"}
-        button{class: "secondary-button", onclick: move |_| {
-            let mut settings = settings.write();
-            settings.check_hash = !settings.check_hash;
-        },"toggle"}
+        div{ class: "toolbar-actions",
+        Checkbox{
+            default_checked: state_assesser("sha256"),
+            on_checked_change: move |_| {
+                let mut settings = settings.write();
+                settings.check_hash = !settings.check_hash;
+            }
         }
-        div{
-        h1 {"Use udisks2 for flashing (must be true on flatpak): {settings().use_udisks2}"}
-        button{class: "secondary-button", onclick: move |_| {
-            let mut settings = settings.write();
-            settings.use_udisks2 = !settings.use_udisks2;
-        },"toggle"}
+        h2 {"Check sha256 hash"}
+        }
+        div{ class: "toolbar-actions",
+        Checkbox{
+            default_checked: state_assesser("udisks2"),
+            on_checked_change: move |_| {
+                let mut settings = settings.write();
+                settings.use_udisks2 = !settings.use_udisks2;
+            }
+        }
+        h2 {"Use udisks2 for flashing (must be checked on flatpak)"}
         }
     }
         div { class: "toolbar",
@@ -62,6 +93,6 @@ pub fn options_menu() -> Element {
                         }} 
                         , "Save Changes"
                 }
-            h3 {"{status}"}
+            h4 {"{status}"}
     }
 }

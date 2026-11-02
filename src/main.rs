@@ -10,7 +10,7 @@ pub mod options;
 pub mod distro_testing;
 pub mod flashing;
 pub mod main_page;
-static CSS: &str = include_str!("../assets/main.css");
+pub mod components;
 
 fn load_icon() -> Icon {
     let img = image::load_from_memory(include_bytes!("../assets/logo.png"))
@@ -23,7 +23,6 @@ fn load_icon() -> Icon {
 #[component]
 fn app() -> Element {
     rsx! {
-        document::Style { "{CSS}" }
         div { distro_list {} }
     }
 }
