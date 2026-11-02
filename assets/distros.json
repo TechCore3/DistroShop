@@ -77,7 +77,7 @@
     "image": "https://cdn.simpleicons.org/opensuse",
     "downloadlink": "https://download.opensuse.org/distribution/leap/16.1/offline/Leap-16.1-offline-installer-x86_64.install.iso",
     "filename": "Leap-16.1-offline-installer-x86_64.install.iso",
-    "sha256": "153f15cc26a2729ddf4b301d3b858db0c9256aa2c39c3e01e0aeebdf7ce56ff7"
+    "sha256": "91970c13c3e1dd825c6d6166a97e4576e66eae0731465db08b6910b2e4d33da1"
   },
   {
     "id": 8,
@@ -95,9 +95,9 @@
     "description": "A tiny, security-oriented distro for containers",
     "descriptionfull": "Alpine Linux is built around musl libc and BusyBox, giving it a very small footprint of a few hundred megabytes. It is a favorite base for Docker images, routers and lightweight servers.",
     "image": "https://cdn.simpleicons.org/alpinelinux",
-    "downloadlink": "https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/alpine-standard-3.24.2-x86_64.iso",
-    "filename": "alpine-standard-3.24.2-x86_64.iso",
-    "sha256": "20c026e3a788bfb75fc8b50a54bcc12aee85e3c75909740bba6a6f4563d63296"
+    "downloadlink": "https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/alpine-standard-3.24.3-x86_64.iso",
+    "filename": "alpine-standard-3.24.3-x86_64.iso",
+    "sha256": "1629ffe7308d4f3d3eeeed3a97d09ad62293f6d37ef3e483a7306077fdac12be"
   },
   {
     "id": 11,
@@ -105,8 +105,8 @@
     "description": "A declarative distro configured with code",
     "descriptionfull": "NixOS lets you describe your entire system in a single configuration file, making setups reproducible and easy to roll back. It is ideal for people who like treating their OS like code.",
     "image": "https://cdn.simpleicons.org/nixos",
-    "downloadlink": "https://releases.nixos.org/nixos/26.05/nixos-26.05.12297.cd4ea8d57de1/nixos-graphical-26.05.12297.cd4ea8d57de1-x86_64-linux.iso",
-    "filename": "nixos-graphical-26.05.12297.cd4ea8d57de1-x86_64-linux.iso",
-    "sha256": "a0c68e67c70e9698c7a5b5e7ba7d99531773491b09c4d5dbcce88e84d81bedea"
+    "downloadlink": "https://releases.nixos.org/nixos/26.05/nixos-26.05.13297.fa1373130d5a/nixos-graphical-26.05.13297.fa1373130d5a-x86_64-linux.iso",
+    "filename": "nixos-graphical-26.05.13297.fa1373130d5a-x86_64-linux.iso",
+    "sha256": "745b0258866e7a93d1ea4ab987a295456dea43047dcdea14ccbfa78e073fafff"
   }
 ]
