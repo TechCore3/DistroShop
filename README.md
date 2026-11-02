@@ -11,7 +11,6 @@ A small desktop app for browsing distro images, testing them in a VM, and flashi
 - Downloads the selected ISO
 - Boots up a Virtual Machine running the ISO
 - Flashes the ISO to a chosen block device
-- Offers a `safe` and `fast` flash mode (streaming the file little by little or loading the entire iso into memory and then writing to disk)
 
 ## Current status
 
