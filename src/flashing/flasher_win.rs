@@ -14,23 +14,33 @@ struct Partition { // originally held 2 values
 }
 
 fn physical_drive_for(letter: String) -> Result<String, Box<dyn std::error::Error>> {
-    let com = COMLibrary::new()?;
-    let wmi = WMIConnection::new(com)?;
-    let query = format!(
-        "ASSOCIATORS OF {{Win32_LogicalDisk.DeviceID='{}:'}} \
-         WHERE AssocClass = Win32_LogicalDiskToPartition",
-        letter.to_ascii_uppercase()
-    );
-    let partitions: Vec<Partition> = wmi.raw_query(&query)?;
+    let letter = letter.trim().trim_end_matches(':').to_ascii_uppercase();
+    if letter.len() != 1 || !letter.as_bytes()[0].is_ascii_alphabetic() {
+        return Err(format!("invalid drive letter: {letter:?}").into());
+    }
+    let result = std::thread::spawn(move || -> Result<String, String> {
+        let com = COMLibrary::new().map_err(|e| e.to_string())?;
+        let wmi = WMIConnection::new(com).map_err(|e| e.to_string())?;
 
-    partitions
-    .first()
-    .map(|p| format!(r"\\.\PhysicalDrive{}", p.disk_index))
-    .ok_or_else(|| format!("no physical drive found for {}:", letter).into())
+        let query = format!(
+            "ASSOCIATORS OF {{Win32_LogicalDisk.DeviceID='{letter}:'}} \
+             WHERE AssocClass = Win32_LogicalDiskToPartition"
+        );
+        let partitions: Vec<Partition> = wmi.raw_query(&query).map_err(|e| e.to_string())?;
+
+        partitions
+            .first()
+            .map(|p| format!(r"\\.\PhysicalDrive{}", p.disk_index))
+            .ok_or_else(|| format!("no physical drive found for {letter}:"))
+    })
+    .join()
+    .map_err(|_| "WMI thread panicked".to_string())?;
+
+    Ok(result?)
 }
 
 pub fn flasher(driveletter: &str, isoimg: &String, flashmode: &str) -> std::io::Result <()> { 
-    let drive = physical_drive_for(driveletter.to_string()).expect("");
+    let drive = physical_drive_for(driveletter.to_string().to_lowercase()).unwrap();
     if !is_elevated::is_elevated() {
         let exe = env::current_exe().expect("no current exe");
         let args = vec![drive, isoimg.to_owned(), flashmode.to_string()];
