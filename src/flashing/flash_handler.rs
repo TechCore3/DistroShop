@@ -41,7 +41,7 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
         .map(|entry| entry.file_name().to_string_lossy().into_owned())
         .collect::<Vec<_>>();
     #[cfg(target_os = "windows")]
-    {
+    let disks: Vec<WinDrive> = {
         let devices = Disks::new_with_refreshed_list().unwrap();
         let mut disks: Vec<WinDrive> = Vec::new();
         for device in &devices {
@@ -49,28 +49,28 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
             if mp.len() == 3 && mp.ends_with(":\\") {
                 let letter = mp.chars().next().unwrap().to_string();
                 let full = format!("{:?} | {:?} | {:?} | {} GB total",
-                device.mount_point(),
-                device.name(),
-                device.file_system(),
-                device.total_space() / 1_000_000_000
-            );
+                    device.mount_point(),
+                    device.name(),
+                    device.file_system(),
+                    device.total_space() / 1_000_000_000
+                );
                 disks.push(WinDrive {
                     full,
                     letter,
                 });
             }
         }
-    }
+        disks
+    };
     
-    #[cfg(any(target_os = "windows", target_os = "macos"))]
     let device_label = {
-        #[cfg(target_os = "macos")]
-       {
-           "Target Block Device (e.g. /dev/diskb)"
-        }
         #[cfg(target_os = "windows")]
        {
            "Target Drive"
+        }
+        #[cfg(target_os = "linux")]
+        {
+            "Target Block Device"
         }
     };
 
@@ -92,7 +92,7 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
         
         form { class: "modal-form", onsubmit: on_submit,
             div { class: "form-field",
-                        label { class: "form-label", "Target device" }
+                        label { class: "form-label", "{device_label}" }
                         select {
                             class: "form-select",
                             value: "{blockdev}",
@@ -105,6 +105,14 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
                             }
                         }
                         }
+                            {
+                                #[cfg(target_os = "windows")]
+                                rsx!{
+                                    for disk in disks {
+                                        option {value: "{disk.full}", "{disk.letter}"}
+                                    }
+                                }
+                            }
                         }
                     
                 
