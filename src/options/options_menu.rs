@@ -70,6 +70,9 @@ pub fn options_menu() -> Element {
         }
         h2 {"Check sha256 hash"}
         }
+        {
+        #[cfg(target_os = "linux")]
+        rsx!{
         div{ class: "toolbar-actions",
         Checkbox{
             default_checked: state_assesser("udisks2"),
@@ -80,6 +83,8 @@ pub fn options_menu() -> Element {
         }
         h2 {"Use udisks2 for flashing (must be checked on flatpak)"}
         }
+    }
+    }
     }
         div { class: "toolbar",
                 div { class: "toolbar-copy",

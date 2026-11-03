@@ -1,14 +1,15 @@
 use dioxus::prelude::*;
 use serde::Deserialize;
 use runas::Command;
+#[cfg(target_os = "linux")]
+use std::path::PathBuf;
 use wmi::{COMLibrary, WMIConnection};
 use std::io;
 use std::env;
-use std::io::{Read, Write};
 use std::fs::File;
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
-struct Partition { // originally held 2 values but i changed the function and im afraid to touch the struct
+struct Partition { // originally held 2 values
     disk_index: u32,
 }
 
@@ -28,11 +29,11 @@ fn physical_drive_for(letter: String) -> Result<String, Box<dyn std::error::Erro
     .ok_or_else(|| format!("no physical drive found for {}:", letter).into())
 }
 
-pub fn flasher(driveletter: &str, isoimg: &str, flashmode: &str) -> std::io::Result <()> { 
+pub fn flasher(driveletter: &str, isoimg: &String, flashmode: &str) -> std::io::Result <()> { 
     let drive = physical_drive_for(driveletter.to_string()).expect("");
     if !is_elevated::is_elevated() {
         let exe = env::current_exe().expect("no current exe");
-        let args = vec![drive, isoimg.to_string(), flashmode.to_string()];
+        let args = vec![drive, isoimg.to_owned(), flashmode.to_string()];
 
         let status = Command::new(exe).arg("-f").args(&args).status()?;
              if !status.success() {
@@ -50,13 +51,13 @@ pub fn flasher(driveletter: &str, isoimg: &str, flashmode: &str) -> std::io::Res
             io::copy(&mut isoimg, &mut drive)?;
             drive.sync_all()?;
         }
-        "fast" => {
+        /*"fast" => {
             info!("using fast mode");
             let mut buffer = Vec::new();
             isoimg.read_to_end(&mut buffer)?;
             drive.write_all(&buffer)?;
             drive.sync_all()?;
-        }
+        }*/
         _ => {
             error!("invalid flash mode");
             std::process::exit(1);

@@ -4,7 +4,7 @@ use std::io;
 use dioxus::desktop::{Config, WindowBuilder};
 use dioxus::desktop::tao::window::Icon;
 use crate::main_page::distro_list;
-#[cfg(target_os = "linux")]
+
 
 pub mod options;
 pub mod distro_testing;

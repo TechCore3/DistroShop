@@ -1,11 +1,18 @@
 use crate::main_page::{self, get_cache_dir};
 use dioxus::core::spawn_forever;
+#[cfg(target_os = "windows")]
+use sysinfo::Disks;
 use crate::options::options_menu::*;
 use dioxus::prelude::*;
 use crate::distro_testing::vm_handler;
 use std::fs;
 use sha2::{Digest, Sha256};
 
+#[cfg(target_os = "windows")]
+struct WinDrive {
+    full: String,
+    letter: String
+}
 
 use std::path::PathBuf;
 use std::time::Duration;
@@ -26,12 +33,35 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
     show_button.set(false);
     let mut blockdev = use_signal(String::new);
     let selected = use_signal(|| "safe".to_string()); 
+    #[cfg(target_os = "linux")]
     let devices = fs::read_dir("/sys/block/")
         .into_iter()
         .flatten()
         .filter_map(Result::ok)
         .map(|entry| entry.file_name().to_string_lossy().into_owned())
         .collect::<Vec<_>>();
+    #[cfg(target_os = "windows")]
+    {
+        let devices = Disks::new_with_refreshed_list().unwrap();
+        let mut disks: Vec<WinDrive> = Vec::new();
+        for device in &devices {
+            let mp = device.mount_point().display().to_string();
+            if mp.len() == 3 && mp.ends_with(":\\") {
+                let letter = mp.chars().next().unwrap().to_string();
+                let full = format!("{:?} | {:?} | {:?} | {} GB total",
+                device.mount_point(),
+                device.name(),
+                device.file_system(),
+                device.total_space() / 1_000_000_000
+            );
+                disks.push(WinDrive {
+                    full,
+                    letter,
+                });
+            }
+        }
+    }
+    
     #[cfg(any(target_os = "windows", target_os = "macos"))]
     let device_label = {
         #[cfg(target_os = "macos")]
@@ -40,7 +70,7 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
         }
         #[cfg(target_os = "windows")]
        {
-           "Target Drive (e.g. D )"
+           "Target Drive"
         }
     };
 
@@ -62,37 +92,25 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
         
         form { class: "modal-form", onsubmit: on_submit,
             div { class: "form-field",
-            {
-                #[cfg(target_os = "linux")]
-                {
-                    rsx! {
                         label { class: "form-label", "Target device" }
                         select {
                             class: "form-select",
                             value: "{blockdev}",
                             onchange: move |evt| blockdev.set(evt.value()),
+                            {
+                            #[cfg(target_os = "linux")]
+                            rsx!{
                             for entry in devices {
                                 option { value: "{entry}", "{entry}" }
                             }
                         }
-                    }
-                }
-                }
+                        }
+                        }
+                    
+                
+                
             }
-            {
-                #[cfg(any(target_os = "windows", target_os = "macos"))]
-                {
-                    rsx! {
-                        label { class: "form-label", "{device_label}" }
-                    input {
-                    class: "form-input",
-                    value: "{blockdev}",
-                    oninput: move |evt| blockdev.set(evt.value()),
-                }
-                    }
-                }
-                }
-        
+                    
             div { class: "form-actions",
                 button { r#type: "submit", class: "primary-button center", "Confirm" }
             }
@@ -128,7 +146,7 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
                 }
             }
             #[cfg(target_os = "windows")]
-            match flasher_win::flasher(&blockdev_for_flash, &iso_filename, &flashmode_for_flash) {
+            match flasher_win::flasher(&blockdev_for_flash, &iso_filename.display().to_string(), &flashmode_for_flash) {
             Ok(()) => {
             status.set("Successfully flashed iso image!".to_string());
             }

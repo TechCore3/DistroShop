@@ -25,6 +25,7 @@ is_elevated = "0.1"
 sha2 = "0.11.0"
 zbus = { version = "6.0.0", features = ["tokio"] }
 dioxus-icons = { version = "0.1.0", default-features = false }
+sysinfo = "0.40.1"
 
 
 [features]
