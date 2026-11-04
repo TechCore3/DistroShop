@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use serde::Deserialize;
-use runas::Command;
+use std::{io::Write, process::{Command, Stdio}};
 #[cfg(target_os = "linux")]
 use std::path::PathBuf;
 use wmi::{COMLibrary, WMIConnection};
@@ -12,6 +12,17 @@ use std::fs::File;
 struct Partition { // originally held 2 values
     disk_index: u32,
 }
+
+
+fn clean_disk(pdrive: String) -> std::io::Result<()> {
+    let  index = pdrive.trim_start_matches(r"\\.\Physicaldrive");
+    let mut part = Command::new("diskpart")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::null())
+        .spawn()?;
+    write!(part.stdin.take().unwrap(), "select disk {index}\nclean\nexit\n")?;
+    if part.wait()?.success() { Ok(()) } else { Err(std::io::Error::other("diskpart failed")) }
+}// modern problems require modern solutions
 
 fn physical_drive_for(letter: String) -> Result<String, Box<dyn std::error::Error>> {
     let letter = letter.trim().trim_end_matches(':').to_ascii_uppercase();
@@ -43,9 +54,9 @@ pub fn flasher(driveletter: &str, isoimg: &String, flashmode: &str) -> std::io::
     let drive = physical_drive_for(driveletter.to_string().to_lowercase()).unwrap();
     if !is_elevated::is_elevated() {
         let exe = env::current_exe().expect("no current exe");
-        let args = vec![drive, isoimg.to_owned(), flashmode.to_string()];
-
-        let status = Command::new(exe).arg("-f").args(&args).status()?;
+        let args = vec![drive.clone(), isoimg.to_owned(), flashmode.to_string()];
+        clean_disk(drive)?;
+        let status = runas::Command::new(exe).arg("-f").args(&args).status()?;
              if !status.success() {
                 return Err(io::Error::new(
                 io::ErrorKind::Other,
