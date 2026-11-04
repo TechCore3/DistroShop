@@ -154,7 +154,7 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
                 }
             }
             #[cfg(target_os = "windows")]
-            match flasher_win::flasher(&blockdev_for_flash, &iso_filename.display().to_string(), &flashmode_for_flash) {
+            match flasher_win::flasher(&blockdev_for_flash, &iso_filename.display().to_string(), &flashmode_for_flash, "nil") {
             Ok(()) => {
             status.set("Successfully flashed iso image!".to_string());
             }

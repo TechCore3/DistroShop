@@ -50,9 +50,9 @@ fn physical_drive_for(letter: String) -> Result<String, Box<dyn std::error::Erro
     Ok(result?)
 }
 
-pub fn flasher(driveletter: &str, isoimg: &String, flashmode: &str) -> std::io::Result <()> { 
-    let drive = physical_drive_for(driveletter.to_string().to_lowercase()).unwrap();
+pub fn flasher(driveletter: &str, isoimg: &String, flashmode: &str, physdrive: &str) -> std::io::Result <()> { 
     if !is_elevated::is_elevated() {
+        let drive = physical_drive_for(driveletter.to_string().to_lowercase()).unwrap();
         let exe = env::current_exe().expect("no current exe");
         let args = vec![drive.clone(), isoimg.to_owned(), flashmode.to_string()];
         clean_disk(drive)?;
@@ -64,7 +64,7 @@ pub fn flasher(driveletter: &str, isoimg: &String, flashmode: &str) -> std::io::
                  ));
              }
      } else {
-    let mut drive = File::options().write(true).open(&drive)?;
+    let mut drive = File::options().write(true).open(&physdrive)?;
     let mut isoimg = File::open(&isoimg)?;
     match flashmode {
         "safe" => {
