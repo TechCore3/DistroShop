@@ -2,14 +2,14 @@ use dioxus::prelude::*;
 use dioxus_icons::lucide::Check;
 use dioxus_primitives::checkbox::{self, CheckboxProps};
 
-#[css_module("/src/components/checkbox/style.css")]
-struct Styles;
+static CSS: &str = include_str!("style.css");
 
 #[component]
 pub fn Checkbox(props: CheckboxProps) -> Element {
     rsx! {
+        document::Style { {CSS} }
         checkbox::Checkbox {
-            class: Styles::dx_checkbox,
+            class: "dx-checkbox",
             checked: props.checked,
             default_checked: props.default_checked,
             required: props.required,
@@ -18,7 +18,7 @@ pub fn Checkbox(props: CheckboxProps) -> Element {
             value: props.value,
             on_checked_change: props.on_checked_change,
             attributes: props.attributes,
-            checkbox::CheckboxIndicator { class: Styles::dx_checkbox_indicator,
+            checkbox::CheckboxIndicator { class: "dx-checkbox-indicator",
                 Check { size: "1rem" }
             }
         }
