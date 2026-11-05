@@ -28,11 +28,6 @@ jobs:
             platform: windows
             target: x86_64-pc-windows-msvc
             msvc_arch: x64
-          - os: windows-latest
-            arch: aarch64
-            platform: windows
-            target: aarch64-pc-windows-msvc
-            msvc_arch: arm64
 
     runs-on: ${{ matrix.os }}
     steps:
