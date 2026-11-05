@@ -36,7 +36,7 @@ fn main() -> io::Result<()> {
         runtime.block_on(flashing::flasher_unix::flasher(&args[2], &args[3], &args[4])).unwrap();
         }
         #[cfg(target_os = "windows")]
-        flashing::flasher_win::flasher(&args[1], &args[2], &args[3], &args[4])?;
+        flashing::flasher_win::flasher(&args[1], &args[2], &args[3], &args[4]).unwrap();
     } else {
         dioxus::LaunchBuilder::desktop()
             .with_cfg(

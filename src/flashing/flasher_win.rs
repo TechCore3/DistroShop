@@ -15,13 +15,38 @@ struct Partition { // originally held 2 values
 
 
 fn clean_disk(pdrive: String) -> std::io::Result<()> {
-    let  index = pdrive.trim_start_matches(r"\\.\Physicaldrive");
+    let prefix = r"\\.\PhysicalDrive";
+    let index = pdrive
+        .get(..prefix.len())
+        .filter(|value| value.eq_ignore_ascii_case(prefix))
+        .and_then(|_| pdrive.get(prefix.len()..))
+        .filter(|value| !value.is_empty() && value.bytes().all(|byte| byte.is_ascii_digit()))
+        .ok_or_else(|| std::io::Error::other(format!("invalid physical drive path: {pdrive}")))?;
     let mut part = Command::new("diskpart")
         .stdin(Stdio::piped())
-        .stdout(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
         .spawn()?;
-    write!(part.stdin.take().unwrap(), "select disk {index}\nclean\nexit\n")?;
-    if part.wait()?.success() { Ok(()) } else { Err(std::io::Error::other("diskpart failed")) }
+    let mut stdin = part
+        .stdin
+        .take()
+        .ok_or_else(|| std::io::Error::other("diskpart stdin was unavailable"))?;
+    write!(stdin, "select disk {index}\r\nclean\r\nexit\r\n")?;
+    drop(stdin);
+
+    let output = part.wait_with_output()?;
+    if output.status.success() {
+        Ok(())
+    } else {
+        let details = String::from_utf8_lossy(&output.stdout);
+        let errors = String::from_utf8_lossy(&output.stderr);
+        Err(std::io::Error::other(format!(
+            "diskpart failed with {}: {}{}",
+            output.status,
+            details.trim(),
+            errors.trim()
+        )))
+    }
 }// modern problems require modern solutions
 
 fn physical_drive_for(letter: String) -> Result<String, Box<dyn std::error::Error>> {
@@ -54,9 +79,8 @@ pub fn flasher(driveletter: &str, isoimg: &String, flashmode: &str, physdrive: &
     if !is_elevated::is_elevated() {
         let drive = physical_drive_for(driveletter.to_string().to_lowercase()).unwrap();
         let exe = env::current_exe().expect("no current exe");
-        let args = vec![drive.clone(), isoimg.to_owned(), flashmode.to_string()];
-        clean_disk(drive)?;
-        let status = runas::Command::new(exe).arg("-f").args(&args).status()?;
+        let args = vec![drive.clone(), isoimg.to_owned(), flashmode.to_string(), drive.clone()];
+        let status = runas::Command::new(exe).args(&args).status()?;
              if !status.success() {
                 return Err(io::Error::new(
                 io::ErrorKind::Other,
@@ -64,6 +88,7 @@ pub fn flasher(driveletter: &str, isoimg: &String, flashmode: &str, physdrive: &
                  ));
              }
      } else {
+    clean_disk(physdrive.to_string())?;
     let mut drive = File::options().write(true).open(&physdrive)?;
     let mut isoimg = File::open(&isoimg)?;
     match flashmode {

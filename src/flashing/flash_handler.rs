@@ -48,10 +48,8 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
             let mp = device.mount_point().display().to_string();
             if mp.len() == 3 && mp.ends_with(":\\") {
                 let letter = mp.chars().next().unwrap().to_string();
-                let full = format!("{:?} | {:?} | {:?} | {} GB total",
+                let full = format!("{:?} | {} GB total",
                     device.mount_point(),
-                    device.name(),
-                    device.file_system(),
                     device.total_space() / 1_000_000_000
                 );
                 disks.push(WinDrive {
@@ -109,7 +107,7 @@ fn form_handler(distro: main_page::distro, show_form: Signal<bool>, mut status: 
                                 #[cfg(target_os = "windows")]
                                 rsx!{
                                     for disk in disks {
-                                        option {value: "{disk.full}", "{disk.letter}"}
+                                        option {value: "{disk.letter}", "{disk.full}"}
                                     }
                                 }
                             }
